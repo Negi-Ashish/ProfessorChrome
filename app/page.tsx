@@ -1,11 +1,12 @@
 "use client";
 import Image from "next/image";
-import { getClothes } from "@/lib/clothes";
+import { getTeacher, getStudents } from "@/lib/firebaseCalls";
 import { useEffect } from "react";
 
 export default function Home() {
   useEffect(() => {
-    getClothes();
+    getTeacher();
+    getStudents();
   }, []);
 
   return (
