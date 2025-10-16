@@ -15,7 +15,7 @@ const teacherMiddleware = (handler: NextApiHandler) => {
           // Handle GET request
           console.log("teacherMiddleware GET Request");
           return handler(req, res);
-        case "POST":
+        case "POST": {
           // Handle POST request
           const { teacher } = req.body;
 
@@ -42,12 +42,30 @@ const teacherMiddleware = (handler: NextApiHandler) => {
           console.log("teacherMiddleware POST Request");
 
           return handler(req, res);
+        }
         case "PUT":
           // Handle PUT request
           console.log("teacherMiddleware PUT Request");
           return handler(req, res);
         case "DELETE":
           // Handle DELETE request
+          const { teacher } = req.body;
+
+          if (!teacher || !teacher.subject) {
+            return res
+              .status(400)
+              .json({ message: "Subject id is required to delete." });
+          }
+
+          const docRef = db.collection("Teacher").doc(teacher.subject);
+          const docSnap = await docRef.get();
+
+          if (!docSnap.exists) {
+            return res.status(404).json({
+              message: `Teacher with id "${teacher.subject}" not found.`,
+            });
+          }
+
           console.log("teacherMiddleware DELETE Request");
           return handler(req, res);
         default:
