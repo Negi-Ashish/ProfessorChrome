@@ -2,7 +2,10 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { db } from "../../../lib/firebaseAdmin";
 import teacherMiddleware from "@/middleware/teacher";
-import { errorMessage } from "@/utils/responses";
+import { errorMessage, successMessage } from "@/utils/responses";
+
+type TeacherData = Record<string, any>;
+
 async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
     const { method } = req;
@@ -11,14 +14,16 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       case "GET":
         // Fetch all teachers
         const snapshot = await db.collection("Teacher").get();
-        const teachers: any[] = [];
+
+        const teachers: Record<string, TeacherData> = {};
         snapshot.forEach((doc) => {
-          teachers.push({ id: doc.id, ...doc.data() });
+          teachers[doc.id] = doc.data() as TeacherData;
         });
-        res.status(200).json({ Teachers: teachers });
+
+        res.status(200).json(successMessage("Subjects", teachers));
         break;
 
-      case "POST":
+      case "POST": {
         // Add a new teacher
         const { teacher } = req.body;
 
@@ -30,21 +35,33 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         // Add teacher object to Firestore
         await docRef.set(teacher);
 
-        res
-          .status(201)
-          .json({ message: "Teacher added successfully", teacher });
+        res.status(200).json(successMessage("Subject added", teacher));
+
         break;
+      }
 
       case "PUT":
         // Update a teacher by id (expecting req.body to have id + fields to update)
         res.status(200).json({ Teachers: "PUT MADE" });
         break;
 
-      case "DELETE":
+      case "DELETE": {
         // Delete a teacher by id (expecting req.body.id)
-        res.status(200).json({ Teachers: "DELETE MADE" });
-        break;
+        const { teacher } = req.body;
+        const docRef = db.collection("Teacher").doc(teacher.subject);
+        await docRef.delete();
 
+        res
+          .status(200)
+          .json(
+            successMessage(
+              "Subject deleted",
+              `Subject with id "${teacher.subject}" deleted successfully.`
+            )
+          );
+
+        break;
+      }
       default:
         res.setHeader("Allow", ["GET", "POST", "PUT", "DELETE"]);
         return res
