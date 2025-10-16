@@ -1,11 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { NextApiRequest, NextApiResponse } from "next";
 import { db } from "../../../lib/firebaseAdmin";
-
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+import teacherMiddleware from "@/middleware/teacher";
+import { errorMessage } from "@/utils/responses";
+async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
     const { method } = req;
 
@@ -22,7 +20,19 @@ export default async function handler(
 
       case "POST":
         // Add a new teacher
-        res.status(200).json({ Teachers: "POST MADE" });
+        const { teacher } = req.body;
+
+        // Store the ID then remove it from the object
+        const docId = teacher.subject;
+        delete teacher.subject; // remove subject from the object so it's not saved
+        const docRef = db.collection("Teacher").doc(docId);
+
+        // Add teacher object to Firestore
+        await docRef.set(teacher);
+
+        res
+          .status(201)
+          .json({ message: "Teacher added successfully", teacher });
         break;
 
       case "PUT":
@@ -37,10 +47,19 @@ export default async function handler(
 
       default:
         res.setHeader("Allow", ["GET", "POST", "PUT", "DELETE"]);
-        res.status(405).end(`Method ${method} Not Allowed`);
+        return res
+          .status(405)
+          .json(
+            errorMessage(
+              "Method Not Allowed",
+              `HTTP method ${req.method} not supported.`
+            )
+          );
     }
   } catch (e) {
     console.error("Error handling request:", e);
     res.status(500).json({ error: "Internal server error" });
   }
 }
+
+export default teacherMiddleware(handler);
