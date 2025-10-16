@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// pages/api/hello.ts
 import type { NextApiRequest, NextApiResponse } from "next";
 import { db } from "../../lib/firebaseAdmin";
 
