@@ -32,6 +32,7 @@ const teacherMiddleware = (handler: NextApiHandler) => {
           if (
             !teacher ||
             !teacher.code ||
+            !teacher.test_name ||
             !teacher.test_code ||
             !teacher.subject ||
             !teacher.questions

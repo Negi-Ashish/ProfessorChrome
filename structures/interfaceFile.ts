@@ -22,6 +22,7 @@ export interface Subjects {
 export interface Test {
   test_code: string;
   subjects: Subjects;
+  test_name: string;
 }
 
 // Document structure (docId → tests array)

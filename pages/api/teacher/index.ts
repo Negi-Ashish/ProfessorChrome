@@ -34,6 +34,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       case "POST": {
         const { teacher } = req.body;
         const testCode = teacher.test_code; // e.g. "asdfg"
+        const testName = teacher.test_name;
         const subject = teacher.subject; // e.g. "history"
         const questions = teacher.questions; // e.g. [{ q1: "...", a1: "..." }]
 
@@ -53,6 +54,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         if (testIndex === -1) {
           tests.push({
             test_code: testCode,
+            test_name: testName,
             subjects: {
               [subject]: questions,
             },

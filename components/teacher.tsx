@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction, useRef, useState } from "react";
 import { getTeacher } from "@/api_call/backend_calls";
 import { TeacherDocument } from "@/structures/interfaceFile";
-
+import { Card } from "./Card";
 interface TeacherProp {
   text?: string; // optional heading
   setTeacher?: Dispatch<SetStateAction<boolean>>;
@@ -93,28 +93,35 @@ export function TeacherComponent({ text = "Enter Code" }: TeacherProp) {
         </div>
       )}
 
-      {teacherData &&
-        teacherData[teacherCode].tests.map((test) => (
-          <div key={test.test_code}>
-            <h3>Test: {test.test_code}</h3>
-            {Object.entries(test.subjects).map(([subjectName, questions]) => (
-              <div key={subjectName}>
-                <h4>Subject: {subjectName}</h4>
-                <ul>
-                  {questions.map((qObj, idx) => (
-                    <li key={idx}>
-                      {Object.entries(qObj).map(([k, v]) => (
-                        <p key={k}>
-                          <strong>{k}:</strong> {v}
-                        </p>
-                      ))}
-                    </li>
-                  ))}
-                </ul>
+      <div className="max-w-6xl mx-auto">
+        <div className="flex flex-wrap gap-4 max-h-[80vh] overflow-auto p-4 justify-center">
+          {teacherData &&
+            teacherData[teacherCode].tests.map((test) => (
+              <div key={test.test_code} className="flex-shrink-0">
+                <Card title={test.test_name} description="" href="/details" />
               </div>
             ))}
-          </div>
-        ))}
+        </div>
+      </div>
     </div>
   );
+}
+
+{
+  /* {Object.entries(test.subjects).map(([subjectName, questions]) => (
+                <div key={subjectName}>
+                  <h4>Subject: {subjectName}</h4>
+                  <ul>
+                    {questions.map((qObj, idx) => (
+                      <li key={idx}>
+                        {Object.entries(qObj).map(([k, v]) => (
+                          <p key={k}>
+                            <strong>{k}:</strong> {v}
+                          </p>
+                        ))}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))} */
 }
