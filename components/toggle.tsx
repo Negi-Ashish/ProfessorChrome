@@ -17,9 +17,9 @@ export function ToggleComponent(props: ToggleProp) {
           case "teacher":
             return <TeacherComponent setRole={props.setRole} />;
           case "student":
-            return <StudentComponent />;
+            return <StudentComponent setRole={props.setRole} />;
           case "admin":
-            return <AdminComponent />;
+            return <AdminComponent setRole={props.setRole} />;
           default:
             return (
               <div className="max-w-6xl mx-auto">
