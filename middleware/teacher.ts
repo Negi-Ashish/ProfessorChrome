@@ -13,32 +13,52 @@ const teacherMiddleware = (handler: NextApiHandler) => {
       switch (req.method) {
         case "GET":
           // Handle GET request
+          const { id } = req.query; // expecting /api/teacher?id=q1w23
+
+          if (!id || typeof id !== "string") {
+            return res
+              .status(400)
+              .json(
+                errorMessage("Invalid Request", "Missing or invalid teacher ID")
+              );
+          }
+          req.body = id;
           console.log("teacherMiddleware GET Request");
           return handler(req, res);
         case "POST": {
           // Handle POST request
           const { teacher } = req.body;
 
-          if (!teacher || !teacher.subject) {
+          if (
+            !teacher ||
+            !teacher.code ||
+            !teacher.test_code ||
+            !teacher.subject ||
+            !teacher.questions
+          ) {
             return res
               .status(400)
-              .json({ error: "Teacher object with 'id' is required." });
+              .json({ error: "Teacher post object is invalid." });
           }
-          // Checking if subject already exists
-          const docId = teacher.subject;
+          // Checking if teacher code already exists
+          const docId = teacher.code;
           const docRef = db.collection("Teacher").doc(docId);
           const docSnap = await docRef.get();
 
-          if (docSnap.exists) {
-            res
+          if (!docSnap.exists) {
+            return res
               .status(405)
               .json(
                 errorMessage(
-                  "Subject Already Exists",
-                  `Teacher with id "${docId}" already exists.`
+                  "Unauthorized Attempt",
+                  `Teacher with id "${docId}" doesnot exists.`
                 )
               );
           }
+
+          req.body.docSnap = docSnap;
+
+          req.body.docRef = docRef;
           console.log("teacherMiddleware POST Request");
 
           return handler(req, res);
@@ -50,21 +70,27 @@ const teacherMiddleware = (handler: NextApiHandler) => {
         case "DELETE":
           // Handle DELETE request
           const { teacher } = req.body;
-
-          if (!teacher || !teacher.subject) {
+          if (!teacher || !teacher.code || !teacher.test_code) {
             return res
               .status(400)
-              .json({ message: "Subject id is required to delete." });
+              .json({ error: "Teacher delete object is invalid." });
           }
-
-          const docRef = db.collection("Teacher").doc(teacher.subject);
+          const docId = teacher.code; // e.g. "q1w23"
+          const docRef = db.collection("Teacher").doc(docId);
           const docSnap = await docRef.get();
 
+          const data = docSnap.data();
+
           if (!docSnap.exists) {
-            return res.status(404).json({
-              message: `Teacher with id "${teacher.subject}" not found.`,
-            });
+            return res
+              .status(404)
+              .json(
+                errorMessage("Teacher doesnot exists", "Document not found.")
+              );
           }
+
+          req.body.data = data;
+          req.body.docRef = docRef;
 
           console.log("teacherMiddleware DELETE Request");
           return handler(req, res);
