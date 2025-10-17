@@ -2,7 +2,7 @@ import { Dispatch, SetStateAction } from "react";
 
 interface StudentProp {
   text?: string; // optional prop
-  setTeacher?: Dispatch<SetStateAction<boolean>>;
+  setRole?: Dispatch<SetStateAction<string>>;
 }
 
 export function StudentComponent(props: StudentProp) {

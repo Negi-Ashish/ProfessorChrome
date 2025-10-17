@@ -2,12 +2,13 @@ import { Dispatch, SetStateAction, useRef, useState } from "react";
 import { getTeacher } from "@/api_call/backend_calls";
 import { TeacherDocument } from "@/structures/interfaceFile";
 import { Card } from "./Card";
+import { BackButton } from "./back";
+
 interface TeacherProp {
-  text?: string; // optional heading
-  setTeacher?: Dispatch<SetStateAction<boolean>>;
+  setRole: Dispatch<SetStateAction<string>>;
 }
 
-export function TeacherComponent({ text = "Enter Code" }: TeacherProp) {
+export function TeacherComponent(props: TeacherProp) {
   const [isComplete, setIsComplete] = useState(false);
   const [teacherCode, setTeacherCode] = useState("");
   const [teacherData, setTeacherData] = useState<TeacherDocument | null>(null);
@@ -57,11 +58,12 @@ export function TeacherComponent({ text = "Enter Code" }: TeacherProp) {
   };
 
   return (
-    <div className="flex flex-col items-center space-y-4">
+    <div className="relative flex flex-col items-center ">
+      <BackButton handleBack={() => props.setRole("")} />
       {!teacherData && (
         <div className="flex flex-col items-center space-y-4">
           <h1 className="text-3xl font-bold  p-4 rounded text-center">
-            {text}
+            Enter Code
           </h1>
           <div className="flex space-x-2">
             {Array.from({ length: 5 }).map((_, idx) => (
@@ -92,13 +94,12 @@ export function TeacherComponent({ text = "Enter Code" }: TeacherProp) {
           </button>
         </div>
       )}
-
       <div className="max-w-6xl mx-auto">
         <div className="flex flex-wrap gap-4 max-h-[80vh] overflow-auto p-4 justify-center">
           {teacherData &&
             teacherData[teacherCode].tests.map((test) => (
               <div key={test.test_code} className="flex-shrink-0">
-                <Card title={test.test_name} description="" href="/details" />
+                <Card title={test.test_name} description="" />
               </div>
             ))}
         </div>
