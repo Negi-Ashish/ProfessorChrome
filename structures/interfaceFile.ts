@@ -38,3 +38,11 @@ export interface TeacherResponse {
   message: string;
   data: TeacherDocument;
 }
+
+export interface DeleteTeacherPayload {
+  teacher: {
+    code: string;
+    test_code: string;
+    subject?: string;
+  };
+}

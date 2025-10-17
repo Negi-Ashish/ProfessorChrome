@@ -1,8 +1,12 @@
 import { Dispatch, SetStateAction, useRef, useState } from "react";
-import { getTeacher } from "@/api_call/backend_calls";
-import { TeacherDocument } from "@/structures/interfaceFile";
+import { getTeacher, delTeacher } from "@/api_call/backend_calls";
+import {
+  TeacherDocument,
+  DeleteTeacherPayload,
+} from "@/structures/interfaceFile";
 import { Card } from "./Card";
 import { BackButton } from "./back";
+import { DeleteButton } from "./delete";
 
 interface TeacherProp {
   setRole: Dispatch<SetStateAction<string>>;
@@ -57,6 +61,26 @@ export function TeacherComponent(props: TeacherProp) {
     }
   };
 
+  const handleDeleteTest = async (test_code: string) => {
+    const payload: DeleteTeacherPayload = {
+      teacher: {
+        code: teacherCode,
+        test_code: test_code,
+      },
+    };
+
+    try {
+      const new_tests = await delTeacher(payload);
+      console.log("Deleted successfully:", new_tests);
+      if (!new_tests.isSuccessful) {
+        throw new Error(new_tests.message);
+      }
+      setTeacherData(new_tests.data);
+    } catch (err) {
+      console.error("Error deleting teacher:", err);
+    }
+  };
+
   return (
     <div className="relative flex flex-col items-center ">
       <BackButton handleBack={() => props.setRole("")} />
@@ -98,8 +122,13 @@ export function TeacherComponent(props: TeacherProp) {
         <div className="flex flex-wrap gap-4 max-h-[80vh] overflow-auto p-4 justify-center">
           {teacherData &&
             teacherData[teacherCode].tests.map((test) => (
-              <div key={test.test_code} className="flex-shrink-0">
+              <div key={test.test_code} className="relative flex-shrink-0">
                 <Card title={test.test_name} description="" />
+                <DeleteButton
+                  handleDelete={async () => {
+                    await handleDeleteTest(test.test_code);
+                  }}
+                />
               </div>
             ))}
         </div>

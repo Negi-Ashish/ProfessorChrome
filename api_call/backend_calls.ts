@@ -1,5 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { TeacherResponse } from "@/structures/interfaceFile";
+import {
+  TeacherResponse,
+  DeleteTeacherPayload,
+} from "@/structures/interfaceFile";
 
 export const getTeacher = async (id: string): Promise<TeacherResponse> => {
   const res = await fetch(`/api/teacher?id=${id}`, {
@@ -7,6 +10,21 @@ export const getTeacher = async (id: string): Promise<TeacherResponse> => {
     headers: {
       "Content-Type": "application/json",
     },
+  });
+
+  const data: TeacherResponse = await res.json();
+  return data;
+};
+
+export const delTeacher = async (
+  payload: DeleteTeacherPayload
+): Promise<TeacherResponse> => {
+  const res = await fetch(`/api/teacher`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
   });
 
   const data: TeacherResponse = await res.json();

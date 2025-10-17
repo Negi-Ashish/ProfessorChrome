@@ -133,6 +133,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         // Update the modified array
         const docRef = req.body.docRef;
         await docRef.update({ tests });
+        const del_teacher: TeacherData = req.body.data as TeacherData;
 
         res
           .status(200)
@@ -141,7 +142,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
               subject
                 ? `Subject "${subject}" deleted successfully.`
                 : `Test "${testCode}" deleted successfully.`,
-              tests
+              { [teacher.code]: del_teacher }
             )
           );
 
