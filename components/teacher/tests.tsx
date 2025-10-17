@@ -1,0 +1,56 @@
+import React, { Dispatch, SetStateAction } from "react";
+import { Card } from "../card";
+import { DeleteButton } from "../delete";
+import {
+  TeacherDocument,
+  DeleteTeacherPayload,
+} from "@/structures/interfaceFile";
+import { delTeacher } from "@/api_call/backend_calls";
+
+interface TeacherTestsProps {
+  teacherData: TeacherDocument;
+  teacherCode: string;
+  setTeacherData: Dispatch<SetStateAction<TeacherDocument | null>>;
+}
+
+export function Tests({
+  teacherData,
+  teacherCode,
+  setTeacherData,
+}: TeacherTestsProps) {
+  const handleDeleteTest = async (test_code: string) => {
+    const payload: DeleteTeacherPayload = {
+      teacher: {
+        code: teacherCode,
+        test_code: test_code,
+      },
+    };
+
+    try {
+      const new_tests = await delTeacher(payload);
+      console.log("Deleted successfully:", new_tests);
+      if (!new_tests.isSuccessful) {
+        throw new Error(new_tests.message);
+      }
+      setTeacherData(new_tests.data);
+    } catch (err) {
+      console.error("Error deleting teacher:", err);
+    }
+  };
+  return (
+    <div className="max-w-6xl mx-auto">
+      <div className="flex flex-wrap gap-4 max-h-[80vh] overflow-auto p-4 justify-center">
+        {teacherData[teacherCode].tests.map((test) => (
+          <div key={test.test_code} className="relative flex-shrink-0">
+            <Card title={test.test_name} description="" />
+            <DeleteButton
+              handleDelete={async () => {
+                await handleDeleteTest(test.test_code);
+              }}
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}

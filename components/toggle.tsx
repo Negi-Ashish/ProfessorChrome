@@ -2,7 +2,7 @@ import { Dispatch, SetStateAction } from "react";
 import { TeacherComponent } from "./teacher";
 import { StudentComponent } from "./student";
 import { AdminComponent } from "./admin";
-import { Card } from "./Card";
+import { Card } from "./card";
 
 interface ToggleProp {
   role: string; // optional prop
