@@ -1,11 +1,12 @@
 import React, { Dispatch, SetStateAction, useRef, useState } from "react";
 import { getTeacher } from "@/api_call/backend_calls";
 import { TeacherDocument } from "@/structures/interfaceFile";
+import { TeacherMode } from "@/structures/typeFile";
 
 interface CodeInputProps {
   setTeacherCode: Dispatch<SetStateAction<string>>;
   setTeacherData: Dispatch<SetStateAction<TeacherDocument | null>>;
-  setTeacherMode: Dispatch<SetStateAction<string>>;
+  setTeacherMode: Dispatch<SetStateAction<TeacherMode>>;
 }
 
 export function CodeInput({
@@ -66,7 +67,7 @@ export function CodeInput({
       <h1 className="text-3xl font-bold  p-4 rounded text-center">
         Enter Code
       </h1>
-      <div className="flex space-x-2">
+      <div className="flex space-x-2 p-1">
         {Array.from({ length: 5 }).map((_, idx) => (
           <input
             key={idx}

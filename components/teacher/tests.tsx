@@ -6,17 +6,20 @@ import {
   DeleteTeacherPayload,
 } from "@/structures/interfaceFile";
 import { delTeacher } from "@/api_call/backend_calls";
+import { TeacherMode } from "@/structures/typeFile";
 
 interface TeacherTestsProps {
   teacherData: TeacherDocument;
   teacherCode: string;
   setTeacherData: Dispatch<SetStateAction<TeacherDocument | null>>;
+  setTeacherMode: Dispatch<SetStateAction<TeacherMode>>;
 }
 
 export function Tests({
   teacherData,
   teacherCode,
   setTeacherData,
+  setTeacherMode,
 }: TeacherTestsProps) {
   const handleDeleteTest = async (test_code: string) => {
     const payload: DeleteTeacherPayload = {
@@ -38,7 +41,7 @@ export function Tests({
     }
   };
   return (
-    <div className="max-w-6xl mx-auto">
+    <div className="max-w-6xl mx-auto flex flex-col items-center ">
       <div className="flex flex-wrap gap-4 max-h-[80vh] overflow-auto p-4 justify-center">
         {teacherData[teacherCode].tests.map((test) => (
           <div key={test.test_code} className="relative flex-shrink-0">
@@ -51,6 +54,15 @@ export function Tests({
           </div>
         ))}
       </div>
+      <button
+        onClick={async () => {
+          setTeacherMode("add");
+        }}
+        className={`mt-4 px-4 py-2 rounded text-white transition bg-blue-500 
+          hover:bg-blue-600 max-w-xl `}
+      >
+        Add New
+      </button>
     </div>
   );
 }
