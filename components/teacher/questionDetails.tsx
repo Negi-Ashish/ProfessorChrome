@@ -24,7 +24,6 @@ export function QuestionDetails({
   if (selectedSubject) {
     subjectName = Object.keys(selectedSubject)[0]; // "history1"
   }
-  // console.log("selectedSubject", selectedSubject);
 
   return (
     <div className="max-w-6xl mx-auto min-h-fit">
@@ -76,7 +75,7 @@ export function QuestionDetails({
           </div>
 
           <div className="mt-10 divide-y">
-            {selectedSubject &&
+            {selectedSubject && selectedSubject[`${subjectName}`].length > 0 ? (
               selectedSubject[`${subjectName}`].map((item, idx) => (
                 <div key={idx} className="py-5 gap-x-12 first:pt-0 sm:flex">
                   <ul className="flex-1 space-y-6 sm:last:pb-6 sm:space-y-8">
@@ -91,7 +90,12 @@ export function QuestionDetails({
                     </li>
                   </ul>
                 </div>
-              ))}
+              ))
+            ) : (
+              <h2 className="font-semibold text-gray-900">
+                No questions have been added yet.
+              </h2>
+            )}
           </div>
 
           <div className="mt-6 flex items-center justify-end gap-x-6">

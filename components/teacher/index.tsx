@@ -27,13 +27,16 @@ export function TeacherComponent({ setRole }: TeacherProp) {
     switch (teacherMode) {
       case "view":
         return (
-          <Tests
-            teacherCode={teacherCode}
-            teacherData={teacherData}
-            setTeacherData={setTeacherData}
-            setTeacherMode={setTeacherMode}
-            setSelectedTest={setSelectedTest}
-          />
+          <div>
+            <BackButton handleBack={() => setRole("")} />
+            <Tests
+              teacherCode={teacherCode}
+              teacherData={teacherData}
+              setTeacherData={setTeacherData}
+              setTeacherMode={setTeacherMode}
+              setSelectedTest={setSelectedTest}
+            />
+          </div>
         );
       case "add":
         return (
@@ -48,8 +51,10 @@ export function TeacherComponent({ setRole }: TeacherProp) {
           <TestDetails
             setTeacherMode={setTeacherMode}
             setSelectedTest={setSelectedTest}
+            setTeacherData={setTeacherData}
             selectedTest={selectedTest}
             setSelectedSubject={setSelectedSubject}
+            teacherCode={teacherCode}
           />
         );
       case "question_details":
@@ -69,14 +74,16 @@ export function TeacherComponent({ setRole }: TeacherProp) {
   };
 
   return (
-    <div className="relative flex flex-col items-center overflow-auto custom-scrollbar">
-      <BackButton handleBack={() => setRole("")} />
+    <div className="relative flex flex-col items-center overflow-auto overflow-x-hidden custom-scrollbar">
       {!teacherData && (
-        <CodeInput
-          setTeacherCode={setTeacherCode}
-          setTeacherMode={setTeacherMode}
-          setTeacherData={setTeacherData}
-        />
+        <div>
+          <BackButton handleBack={() => setRole("")} />
+          <CodeInput
+            setTeacherCode={setTeacherCode}
+            setTeacherMode={setTeacherMode}
+            setTeacherData={setTeacherData}
+          />
+        </div>
       )}
       <div className="">{teacherData && renderTeacherMode()}</div>
     </div>

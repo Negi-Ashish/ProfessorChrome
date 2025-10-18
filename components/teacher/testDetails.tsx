@@ -1,14 +1,21 @@
-import React, { Dispatch, SetStateAction } from "react";
-import { Subjects, Test } from "@/structures/interfaceFile";
+import React, { Dispatch, SetStateAction, useState } from "react";
+import {
+  Subjects,
+  TeacherPayload,
+  Test,
+  TeacherDocument,
+} from "@/structures/interfaceFile";
 import { TeacherMode } from "@/structures/typeFile";
 import { ActionCard } from "../ActionCard";
-// import { TeacherDocument } from "@/structures/interfaceFile";
+import { createTest } from "@/api_call/backend_calls";
 
 interface TestDetailsProps {
   setTeacherMode: Dispatch<SetStateAction<TeacherMode>>;
   selectedTest: Test | null;
   setSelectedSubject: Dispatch<SetStateAction<Subjects | null>>;
   setSelectedTest: Dispatch<SetStateAction<Test | null>>;
+  teacherCode: string;
+  setTeacherData: Dispatch<SetStateAction<TeacherDocument | null>>;
 }
 
 export function TestDetails({
@@ -16,26 +23,59 @@ export function TestDetails({
   selectedTest,
   setSelectedSubject,
   setSelectedTest,
+  teacherCode,
+  setTeacherData,
 }: TestDetailsProps) {
-  //   const handleDeleteTest = async (test_code: string) => {
-  //     const payload: DeleteTeacherPayload = {
-  //       teacher: {
-  //         code: teacherCode,
-  //         test_code: test_code,
-  //       },
-  //     };
+  const [newSubjectName, setNewSubjectName] = useState("");
+  const [newSubjectMode, setNewSubjectMode] = useState(false);
+  const [errors, setErrors] = useState<{ code?: string; name?: string }>({});
 
-  //     try {
-  //       const new_tests = await delTeacher(payload);
-  //       console.log("Deleted successfully:", new_tests);
-  //       if (!new_tests.isSuccessful) {
-  //         throw new Error(new_tests.message);
-  //       }
-  //       setTeacherData(new_tests.data);
-  //     } catch (err) {
-  //       console.error("Error deleting teacher:", err);
-  //     }
-  //   };
+  // Validation function
+  const validate = () => {
+    const newErrors: typeof errors = {};
+    // Test name: at least 3 letters
+    if (newSubjectName.trim().length < 5) {
+      newErrors.name = "Subject name must be at least 5 characters.";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleCreateSubject = async () => {
+    if (!validate()) {
+      return;
+    }
+    try {
+      const payload: TeacherPayload = {
+        teacher: {
+          code: teacherCode,
+          test_code: selectedTest?.test_code || "",
+          test_name: selectedTest?.test_name,
+          subject: newSubjectName,
+          create_mode: "subject_create",
+        },
+      };
+      const teacherData = await createTest(payload);
+      if (!teacherData.isSuccessful) {
+        throw new Error(teacherData.message);
+      }
+
+      setTeacherData(teacherData.data);
+      const tests = teacherData.data[`${teacherCode}`]["tests"];
+      const index = tests.findIndex(
+        (test: { test_code: string }) =>
+          test.test_code === selectedTest?.test_code
+      );
+
+      setSelectedTest(tests[index]);
+      setNewSubjectMode(false);
+      setNewSubjectName("");
+    } catch (e) {
+      console.log("Error in Creating", e);
+    }
+  };
+
   return (
     <div className="max-w-6xl mx-auto min-h-fit">
       <div className="flex flex-wrap gap-4 max-h-[80vh]  p-4 justify-center">
@@ -81,45 +121,76 @@ export function TestDetails({
             )}
           </div>
 
-          <div className="mt-6 flex items-center justify-end gap-x-6">
-            <button
-              type="button"
-              className="text-sm/6 font-semibold text-gray-900"
-              onClick={() => {
-                setSelectedTest(null);
-                setTeacherMode("view");
-              }}
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-            >
-              Add New
-            </button>
-          </div>
+          {newSubjectMode ? (
+            <div>
+              <div className="pt-10">
+                <div className="col-span-full">
+                  <label
+                    htmlFor="test-code"
+                    className="block text-sm/6 font-medium text-gray-900 -mt-4"
+                  >
+                    Enter new subject name
+                  </label>
+                  <div className="mt-2">
+                    <input
+                      id="test-code"
+                      name="test-code"
+                      type="text"
+                      value={newSubjectName}
+                      onChange={(e) => setNewSubjectName(e.target.value)}
+                      autoComplete="test-code"
+                      className="block w-full  rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                    />
+                    {errors.name && (
+                      <p className="text-red-500 text-sm mt-1">{errors.name}</p>
+                    )}
+                  </div>
+
+                  <div className="mt-6 flex items-center justify-end gap-x-6">
+                    <button
+                      type="button"
+                      className="pt-2 text-sm/6 font-semibold text-gray-900"
+                      onClick={() => {
+                        setNewSubjectMode(false);
+                        setNewSubjectName("");
+                      }}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="button"
+                      className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                      onClick={async () => await handleCreateSubject()}
+                    >
+                      Confirm
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="mt-6 flex items-center justify-end gap-x-6">
+              <button
+                type="button"
+                className="text-sm/6 font-semibold text-gray-900"
+                onClick={() => {
+                  setSelectedTest(null);
+                  setTeacherMode("view");
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                onClick={() => setNewSubjectMode(true)}
+              >
+                Add New
+              </button>
+            </div>
+          )}
         </form>
       </div>
     </div>
   );
-}
-
-{
-  /* {Object.entries(test.subjects).map(([subjectName, questions]) => (
-                <div key={subjectName}>
-                  <h4>Subject: {subjectName}</h4>
-                  <ul>
-                    {questions.map((qObj, idx) => (
-                      <li key={idx}>
-                        {Object.entries(qObj).map(([k, v]) => (
-                          <p key={k}>
-                            <strong>{k}:</strong> {v}
-                          </p>
-                        ))}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))} */
 }

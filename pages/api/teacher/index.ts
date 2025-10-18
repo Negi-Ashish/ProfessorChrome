@@ -72,7 +72,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
           const existingTest = tests[testIndex];
 
           // Check if subject already exists under this test
-          if (existingTest.subjects[subject]) {
+          if (existingTest?.subjects[subject]) {
             return res
               .status(400)
               .json(
@@ -84,7 +84,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
           }
 
           // Add new subject to this test
-          existingTest.subjects[subject] = questions;
+          existingTest.subjects[subject] = questions ? questions : [];
         }
 
         // Update Firestore document
