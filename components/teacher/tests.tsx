@@ -52,7 +52,7 @@ export function Tests({
               title={test.test_name}
               description=""
               handleClick={() => {
-                setTeacherMode("details");
+                setTeacherMode("test_details");
                 setSelectedTest(test);
               }}
             />

@@ -1,19 +1,21 @@
 import React, { Dispatch, SetStateAction } from "react";
-import { TeacherDocument, Test } from "@/structures/interfaceFile";
+import { Subjects, Test } from "@/structures/interfaceFile";
 import { TeacherMode } from "@/structures/typeFile";
 import { ActionCard } from "../ActionCard";
 // import { TeacherDocument } from "@/structures/interfaceFile";
 
 interface TestDetailsProps {
   setTeacherMode: Dispatch<SetStateAction<TeacherMode>>;
-  teacherCode: string;
-  setTeacherData: Dispatch<SetStateAction<TeacherDocument | null>>;
   selectedTest: Test | null;
+  setSelectedSubject: Dispatch<SetStateAction<Subjects | null>>;
+  setSelectedTest: Dispatch<SetStateAction<Test | null>>;
 }
 
 export function TestDetails({
   setTeacherMode,
   selectedTest,
+  setSelectedSubject,
+  setSelectedTest,
 }: TestDetailsProps) {
   //   const handleDeleteTest = async (test_code: string) => {
   //     const payload: DeleteTeacherPayload = {
@@ -59,7 +61,16 @@ export function TestDetails({
                   Subjects
                 </h1>
                 {Object.keys(selectedTest.subjects).map((subjectName) => (
-                  <ActionCard key={subjectName} name={subjectName} />
+                  <ActionCard
+                    key={subjectName}
+                    name={subjectName}
+                    handleClick={() => {
+                      setSelectedSubject({
+                        [subjectName]: selectedTest.subjects[subjectName],
+                      });
+                      setTeacherMode("question_details");
+                    }}
+                  />
                 ))}
               </div>
             ) : (
@@ -75,6 +86,7 @@ export function TestDetails({
               type="button"
               className="text-sm/6 font-semibold text-gray-900"
               onClick={() => {
+                setSelectedTest(null);
                 setTeacherMode("view");
               }}
             >

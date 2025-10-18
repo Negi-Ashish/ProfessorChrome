@@ -2,4 +2,9 @@
 
 export type TeacherData = Record<string, any>;
 
-export type TeacherMode = "" | "view" | "add" | "details";
+export type TeacherMode =
+  | ""
+  | "view"
+  | "add"
+  | "test_details"
+  | "question_details";

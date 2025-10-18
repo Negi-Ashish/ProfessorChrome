@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction, useState } from "react";
 
-import { TeacherDocument, Test } from "@/structures/interfaceFile";
+import { Subjects, TeacherDocument, Test } from "@/structures/interfaceFile";
 
 import { BackButton } from "../back";
 import { Tests } from "./tests";
@@ -8,6 +8,7 @@ import { CodeInput } from "./code";
 import { AddTests } from "./addTests";
 import { TeacherMode } from "@/structures/typeFile";
 import { TestDetails } from "./testDetails";
+import { QuestionDetails } from "./questionDetails";
 interface TeacherProp {
   setRole: Dispatch<SetStateAction<string>>;
 }
@@ -17,6 +18,7 @@ export function TeacherComponent({ setRole }: TeacherProp) {
   const [teacherData, setTeacherData] = useState<TeacherDocument | null>(null);
   const [teacherMode, setTeacherMode] = useState<TeacherMode>("");
   const [selectedTest, setSelectedTest] = useState<Test | null>(null);
+  const [selectedSubject, setSelectedSubject] = useState<Subjects | null>(null);
 
   const renderTeacherMode = () => {
     if (!teacherData) {
@@ -41,13 +43,24 @@ export function TeacherComponent({ setRole }: TeacherProp) {
             setTeacherData={setTeacherData}
           />
         );
-      case "details":
+      case "test_details":
         return (
           <TestDetails
+            setTeacherMode={setTeacherMode}
+            setSelectedTest={setSelectedTest}
+            selectedTest={selectedTest}
+            setSelectedSubject={setSelectedSubject}
+          />
+        );
+      case "question_details":
+        return (
+          <QuestionDetails
             setTeacherMode={setTeacherMode}
             teacherCode={teacherCode}
             setTeacherData={setTeacherData}
             selectedTest={selectedTest}
+            selectedSubject={selectedSubject}
+            setSelectedSubject={setSelectedSubject}
           />
         );
       default:

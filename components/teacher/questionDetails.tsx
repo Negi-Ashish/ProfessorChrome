@@ -1,8 +1,8 @@
 import React, { Dispatch, SetStateAction } from "react";
 import { PhotoIcon } from "@heroicons/react/24/solid";
-import { TeacherDocument, Test } from "@/structures/interfaceFile";
+import { Subjects, TeacherDocument, Test } from "@/structures/interfaceFile";
 import { TeacherMode } from "@/structures/typeFile";
-import { ActionCard } from "../ActionCard";
+
 // import { TeacherDocument } from "@/structures/interfaceFile";
 
 interface QuestionDetailsProps {
@@ -10,31 +10,22 @@ interface QuestionDetailsProps {
   teacherCode: string;
   setTeacherData: Dispatch<SetStateAction<TeacherDocument | null>>;
   selectedTest: Test | null;
+  selectedSubject: Subjects | null;
+  setSelectedSubject: Dispatch<SetStateAction<Subjects | null>>;
 }
 
 export function QuestionDetails({
   setTeacherMode,
   selectedTest,
+  selectedSubject,
+  setSelectedSubject,
 }: QuestionDetailsProps) {
-  //   const handleDeleteTest = async (test_code: string) => {
-  //     const payload: DeleteTeacherPayload = {
-  //       teacher: {
-  //         code: teacherCode,
-  //         test_code: test_code,
-  //       },
-  //     };
+  let subjectName;
+  if (selectedSubject) {
+    subjectName = Object.keys(selectedSubject)[0]; // "history1"
+  }
+  // console.log("selectedSubject", selectedSubject);
 
-  //     try {
-  //       const new_tests = await delTeacher(payload);
-  //       console.log("Deleted successfully:", new_tests);
-  //       if (!new_tests.isSuccessful) {
-  //         throw new Error(new_tests.message);
-  //       }
-  //       setTeacherData(new_tests.data);
-  //     } catch (err) {
-  //       console.error("Error deleting teacher:", err);
-  //     }
-  //   };
   return (
     <div className="max-w-6xl mx-auto min-h-fit">
       <div className="flex flex-wrap gap-4 max-h-[80vh]  p-4 justify-center">
@@ -79,11 +70,28 @@ export function QuestionDetails({
           </div>
 
           <div className="border-b border-gray-900/10 pb-5">
-            <h2 className="text-base/7 font-semibold text-gray-900 mt-5">
-              Subjects
+            <h2 className="text-xl font-semibold text-gray-900 mt-5">
+              {subjectName}
             </h2>
+          </div>
 
-            <ActionCard />
+          <div className="mt-10 divide-y">
+            {selectedSubject &&
+              selectedSubject[`${subjectName}`].map((item, idx) => (
+                <div key={idx} className="py-5 gap-x-12 first:pt-0 sm:flex">
+                  <ul className="flex-1 space-y-6 sm:last:pb-6 sm:space-y-8">
+                    <li>
+                      <summary className="flex items-center justify-between font-semibold text-gray-700">
+                        {item.Q}
+                      </summary>
+                      <p
+                        dangerouslySetInnerHTML={{ __html: item.A }}
+                        className="mt-3 text-gray-600 leading-relaxed"
+                      ></p>
+                    </li>
+                  </ul>
+                </div>
+              ))}
           </div>
 
           <div className="mt-6 flex items-center justify-end gap-x-6">
@@ -91,7 +99,8 @@ export function QuestionDetails({
               type="button"
               className="text-sm/6 font-semibold text-gray-900"
               onClick={() => {
-                setTeacherMode("view");
+                setSelectedSubject(null);
+                setTeacherMode("test_details");
               }}
             >
               Cancel
@@ -107,23 +116,4 @@ export function QuestionDetails({
       </div>
     </div>
   );
-}
-
-{
-  /* {Object.entries(test.subjects).map(([subjectName, questions]) => (
-                <div key={subjectName}>
-                  <h4>Subject: {subjectName}</h4>
-                  <ul>
-                    {questions.map((qObj, idx) => (
-                      <li key={idx}>
-                        {Object.entries(qObj).map(([k, v]) => (
-                          <p key={k}>
-                            <strong>{k}:</strong> {v}
-                          </p>
-                        ))}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))} */
 }
