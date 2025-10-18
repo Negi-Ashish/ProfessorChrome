@@ -10,6 +10,8 @@ export interface TeacherPayload {
     test_code: string; // Unique test identifier
     subject?: string; // Optional: subject name
     questions?: Question[]; // Optional: array of questions for that subject
+    test_name?: string;
+    create_mode?: string;
   };
 }
 

@@ -34,8 +34,7 @@ const teacherMiddleware = (handler: NextApiHandler) => {
             !teacher.code ||
             !teacher.test_name ||
             !teacher.test_code ||
-            !teacher.subject ||
-            !teacher.questions
+            !teacher.create_mode
           ) {
             return res
               .status(400)
@@ -58,8 +57,8 @@ const teacherMiddleware = (handler: NextApiHandler) => {
           }
 
           req.body.docSnap = docSnap;
-
           req.body.docRef = docRef;
+
           console.log("teacherMiddleware POST Request");
 
           return handler(req, res);

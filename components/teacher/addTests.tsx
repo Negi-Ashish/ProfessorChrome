@@ -1,32 +1,73 @@
+import { createTest } from "@/api_call/backend_calls";
+import { TeacherDocument, TeacherPayload } from "@/structures/interfaceFile";
 import { TeacherMode } from "@/structures/typeFile";
-import React, { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, SetStateAction, useState } from "react";
 
 // import { TeacherDocument } from "@/structures/interfaceFile";
 
 interface AddTestsProps {
   setTeacherMode: Dispatch<SetStateAction<TeacherMode>>;
+  teacherCode: string;
+  setTeacherData: Dispatch<SetStateAction<TeacherDocument | null>>;
 }
 
-export function AddTests({ setTeacherMode }: AddTestsProps) {
-  //   const handleDeleteTest = async (test_code: string) => {
-  //     const payload: DeleteTeacherPayload = {
-  //       teacher: {
-  //         code: teacherCode,
-  //         test_code: test_code,
-  //       },
-  //     };
+export function AddTests({
+  setTeacherMode,
+  teacherCode,
+  setTeacherData,
+}: AddTestsProps) {
+  const [testCode, setTestCode] = useState("");
+  const [testName, setTestName] = useState("");
+  const [errors, setErrors] = useState<{ code?: string; name?: string }>({});
 
-  //     try {
-  //       const new_tests = await delTeacher(payload);
-  //       console.log("Deleted successfully:", new_tests);
-  //       if (!new_tests.isSuccessful) {
-  //         throw new Error(new_tests.message);
-  //       }
-  //       setTeacherData(new_tests.data);
-  //     } catch (err) {
-  //       console.error("Error deleting teacher:", err);
-  //     }
-  //   };
+  // Validation function
+  const validate = () => {
+    const newErrors: typeof errors = {};
+
+    // Test code: exactly 5 alphanumeric characters
+    if (!/^[a-zA-Z0-9]{5}$/.test(testCode)) {
+      newErrors.code = "Test code must be exactly 5 letters/numbers.";
+    }
+
+    // Test name: at least 3 letters
+    if (testName.trim().length < 3) {
+      newErrors.name = "Test name must be at least 3 characters.";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async () => {
+    if (validate()) {
+      // do something with the values
+      await createTestCode();
+    }
+  };
+
+  const createTestCode = async () => {
+    try {
+      const payload: TeacherPayload = {
+        teacher: {
+          code: teacherCode,
+          test_code: testCode,
+          test_name: testName,
+          create_mode: "test_create",
+        },
+      };
+      const teacherData = await createTest(payload);
+      if (!teacherData.isSuccessful) {
+        throw new Error(teacherData.message);
+      }
+
+      setTeacherData(teacherData.data);
+      setTeacherMode("view");
+      console.log("teacherData", teacherData);
+    } catch (e) {
+      console.log("Error in Creating", e);
+    }
+  };
+
   return (
     <div className="max-w-6xl mx-auto min-h-fit ">
       <div className="flex justify-center">
@@ -44,9 +85,14 @@ export function AddTests({ setTeacherMode }: AddTestsProps) {
                   id="test-code"
                   name="test-code"
                   type="text"
+                  value={testCode}
+                  onChange={(e) => setTestCode(e.target.value)}
                   autoComplete="test-code"
                   className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                 />
+                {errors.code && (
+                  <p className="text-red-500 text-sm mt-1">{errors.code}</p>
+                )}
               </div>
             </div>
             <div className="col-span-full">
@@ -61,9 +107,17 @@ export function AddTests({ setTeacherMode }: AddTestsProps) {
                   id="test-name"
                   name="test-name"
                   type="text"
+                  value={testName}
+                  onChange={(e) => setTestName(e.target.value)}
                   autoComplete="test-name"
-                  className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                  className="block w-full rounded-md bg-white px-3 py-1.5 text-base 
+              text-gray-900 outline-1 -outline-offset-1 outline-gray-300 
+              placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 
+              focus:outline-indigo-600 sm:text-sm/6"
                 />
+                {errors.name && (
+                  <p className="text-red-500 text-sm mt-1">{errors.name}</p>
+                )}
               </div>
             </div>
           </div>
@@ -80,7 +134,10 @@ export function AddTests({ setTeacherMode }: AddTestsProps) {
             </button>
             <button
               type="button"
-              className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold 
+              text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 
+              focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              onClick={async () => await handleSubmit()}
             >
               Save
             </button>

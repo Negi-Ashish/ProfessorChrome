@@ -2,6 +2,7 @@
 import {
   TeacherResponse,
   DeleteTeacherPayload,
+  TeacherPayload,
 } from "@/structures/interfaceFile";
 
 export const getTeacher = async (id: string): Promise<TeacherResponse> => {
@@ -21,6 +22,21 @@ export const delTeacher = async (
 ): Promise<TeacherResponse> => {
   const res = await fetch(`/api/teacher`, {
     method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
+
+  const data: TeacherResponse = await res.json();
+  return data;
+};
+
+export const createTest = async (
+  payload: TeacherPayload
+): Promise<TeacherResponse> => {
+  const res = await fetch(`/api/teacher`, {
+    method: "POST",
     headers: {
       "Content-Type": "application/json",
     },

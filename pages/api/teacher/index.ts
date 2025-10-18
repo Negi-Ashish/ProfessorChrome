@@ -37,6 +37,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         const testName = teacher.test_name;
         const subject = teacher.subject; // e.g. "history"
         const questions = teacher.questions; // e.g. [{ q1: "...", a1: "..." }]
+        const mode = teacher.create_mode;
 
         // Getting the item
         const docRef = req.body.docRef;
@@ -51,15 +52,23 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         const testIndex = tests.findIndex((t: any) => t.test_code === testCode);
 
         // If test doesn't exist, add new test
-        if (testIndex === -1) {
+        if (testIndex === -1 && mode == "test_create") {
           tests.push({
             test_code: testCode,
             test_name: testName,
-            subjects: {
-              [subject]: questions,
-            },
           });
         } else {
+          // Case when its test creating mode and that test code is already existing.
+          if (mode == "test_create") {
+            return res
+              .status(400)
+              .json(
+                errorMessage(
+                  "Test Code Already Exists",
+                  "The test code is already active for this teacher."
+                )
+              );
+          }
           const existingTest = tests[testIndex];
 
           // Check if subject already exists under this test
@@ -80,8 +89,14 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 
         // Update Firestore document
         await docRef.update({ tests });
+        const new_docSnap = await docRef.get();
+        const new_teacher: TeacherData = new_docSnap.data() as TeacherData;
 
-        res.status(200).json(successMessage("Questions added", teacher));
+        res
+          .status(200)
+          .json(
+            successMessage("Questions added", { [teacher.code]: new_teacher })
+          );
 
         break;
       }

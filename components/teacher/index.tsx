@@ -32,7 +32,13 @@ export function TeacherComponent({ setRole }: TeacherProp) {
           />
         );
       case "add":
-        return <AddTests setTeacherMode={setTeacherMode} />;
+        return (
+          <AddTests
+            setTeacherMode={setTeacherMode}
+            teacherCode={teacherCode}
+            setTeacherData={setTeacherData}
+          />
+        );
       default:
         return <p>No valid mode selected.</p>;
     }
