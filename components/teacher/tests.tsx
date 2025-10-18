@@ -4,6 +4,7 @@ import { DeleteButton } from "../delete";
 import {
   TeacherDocument,
   DeleteTeacherPayload,
+  Test,
 } from "@/structures/interfaceFile";
 import { delTeacher } from "@/api_call/backend_calls";
 import { TeacherMode } from "@/structures/typeFile";
@@ -13,6 +14,7 @@ interface TeacherTestsProps {
   teacherCode: string;
   setTeacherData: Dispatch<SetStateAction<TeacherDocument | null>>;
   setTeacherMode: Dispatch<SetStateAction<TeacherMode>>;
+  setSelectedTest: Dispatch<SetStateAction<Test | null>>;
 }
 
 export function Tests({
@@ -20,6 +22,7 @@ export function Tests({
   teacherCode,
   setTeacherData,
   setTeacherMode,
+  setSelectedTest,
 }: TeacherTestsProps) {
   const handleDeleteTest = async (test_code: string) => {
     const payload: DeleteTeacherPayload = {
@@ -45,7 +48,14 @@ export function Tests({
       <div className="flex flex-wrap gap-4 max-h-[80vh] overflow-auto p-4 justify-center">
         {teacherData[teacherCode].tests.map((test) => (
           <div key={test.test_code} className="relative flex-shrink-0">
-            <Card title={test.test_name} description="" />
+            <Card
+              title={test.test_name}
+              description=""
+              handleClick={() => {
+                setTeacherMode("details");
+                setSelectedTest(test);
+              }}
+            />
             <DeleteButton
               handleDelete={async () => {
                 await handleDeleteTest(test.test_code);

@@ -89,14 +89,10 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 
         // Update Firestore document
         await docRef.update({ tests });
-        const new_docSnap = await docRef.get();
-        const new_teacher: TeacherData = new_docSnap.data() as TeacherData;
 
         res
           .status(200)
-          .json(
-            successMessage("Questions added", { [teacher.code]: new_teacher })
-          );
+          .json(successMessage("Questions added", { [teacher.code]: data }));
 
         break;
       }

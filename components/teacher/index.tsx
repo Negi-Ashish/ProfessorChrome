@@ -1,13 +1,13 @@
 import { Dispatch, SetStateAction, useState } from "react";
 
-import { TeacherDocument } from "@/structures/interfaceFile";
+import { TeacherDocument, Test } from "@/structures/interfaceFile";
 
 import { BackButton } from "../back";
 import { Tests } from "./tests";
 import { CodeInput } from "./code";
 import { AddTests } from "./addTests";
 import { TeacherMode } from "@/structures/typeFile";
-
+import { TestDetails } from "./testDetails";
 interface TeacherProp {
   setRole: Dispatch<SetStateAction<string>>;
 }
@@ -16,6 +16,7 @@ export function TeacherComponent({ setRole }: TeacherProp) {
   const [teacherCode, setTeacherCode] = useState("");
   const [teacherData, setTeacherData] = useState<TeacherDocument | null>(null);
   const [teacherMode, setTeacherMode] = useState<TeacherMode>("");
+  const [selectedTest, setSelectedTest] = useState<Test | null>(null);
 
   const renderTeacherMode = () => {
     if (!teacherData) {
@@ -29,6 +30,7 @@ export function TeacherComponent({ setRole }: TeacherProp) {
             teacherData={teacherData}
             setTeacherData={setTeacherData}
             setTeacherMode={setTeacherMode}
+            setSelectedTest={setSelectedTest}
           />
         );
       case "add":
@@ -37,6 +39,15 @@ export function TeacherComponent({ setRole }: TeacherProp) {
             setTeacherMode={setTeacherMode}
             teacherCode={teacherCode}
             setTeacherData={setTeacherData}
+          />
+        );
+      case "details":
+        return (
+          <TestDetails
+            setTeacherMode={setTeacherMode}
+            teacherCode={teacherCode}
+            setTeacherData={setTeacherData}
+            selectedTest={selectedTest}
           />
         );
       default:
@@ -57,23 +68,4 @@ export function TeacherComponent({ setRole }: TeacherProp) {
       <div className="">{teacherData && renderTeacherMode()}</div>
     </div>
   );
-}
-
-{
-  /* {Object.entries(test.subjects).map(([subjectName, questions]) => (
-                <div key={subjectName}>
-                  <h4>Subject: {subjectName}</h4>
-                  <ul>
-                    {questions.map((qObj, idx) => (
-                      <li key={idx}>
-                        {Object.entries(qObj).map(([k, v]) => (
-                          <p key={k}>
-                            <strong>{k}:</strong> {v}
-                          </p>
-                        ))}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))} */
 }
