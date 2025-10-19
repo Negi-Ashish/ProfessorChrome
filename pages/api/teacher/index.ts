@@ -72,7 +72,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
           const existingTest = tests[testIndex];
 
           // Check if subject already exists under this test
-          if (existingTest?.subjects[subject]) {
+          if (existingTest?.subjects[subject] && mode == "subject_create") {
             return res
               .status(400)
               .json(
@@ -81,10 +81,18 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
                   "Subject already exists under this test. Please modify or delete it."
                 )
               );
+          } else {
+            if (mode == "subject_create") {
+              existingTest.subjects[subject] = [];
+            }
+            // Add new Questions
+            else if (mode == "question_create" && questions) {
+              existingTest.subjects[subject] = [
+                ...(existingTest.subjects[subject] || []),
+                ...questions,
+              ];
+            }
           }
-
-          // Add new subject to this test
-          existingTest.subjects[subject] = questions ? questions : [];
         }
 
         // Update Firestore document

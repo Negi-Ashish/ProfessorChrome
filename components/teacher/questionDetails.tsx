@@ -1,7 +1,13 @@
-import React, { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, SetStateAction, useState } from "react";
 import { PhotoIcon } from "@heroicons/react/24/solid";
-import { Subjects, TeacherDocument, Test } from "@/structures/interfaceFile";
+import {
+  Subjects,
+  TeacherDocument,
+  TeacherPayload,
+  Test,
+} from "@/structures/interfaceFile";
 import { TeacherMode } from "@/structures/typeFile";
+import { createTest } from "@/api_call/backend_calls";
 
 // import { TeacherDocument } from "@/structures/interfaceFile";
 
@@ -12,18 +18,89 @@ interface QuestionDetailsProps {
   selectedTest: Test | null;
   selectedSubject: Subjects | null;
   setSelectedSubject: Dispatch<SetStateAction<Subjects | null>>;
+  setSelectedTest: Dispatch<SetStateAction<Test | null>>;
 }
 
 export function QuestionDetails({
+  setSelectedTest,
   setTeacherMode,
   selectedTest,
   selectedSubject,
   setSelectedSubject,
+  teacherCode,
+  setTeacherData,
 }: QuestionDetailsProps) {
-  let subjectName;
+  const [newQuestion, setNewQuestion] = useState("");
+  const [newAnswer, setNewAnswer] = useState("");
+  const [newQuestionMode, setNewQuestionMode] = useState(false);
+  const [errors, setErrors] = useState<{ question?: string; answer?: string }>(
+    {}
+  );
+
+  let subjectName: string = "";
   if (selectedSubject) {
-    subjectName = Object.keys(selectedSubject)[0]; // "history1"
+    subjectName = Object.keys(selectedSubject)[0]; // "history"
   }
+
+  // Validation function
+  const validate = () => {
+    const newErrors: typeof errors = {};
+    // Test name: at least 3 letters
+    if (newQuestion.trim().length < 10) {
+      newErrors.question = "Question must be at least 10 characters.";
+    }
+
+    if (newAnswer.trim().length < 10) {
+      newErrors.answer = "Answer must be at least 10 characters.";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleCreateQuestion = async () => {
+    if (!validate()) {
+      return;
+    }
+
+    try {
+      const payload: TeacherPayload = {
+        teacher: {
+          code: teacherCode,
+          test_code: selectedTest?.test_code || "",
+          test_name: selectedTest?.test_name,
+          subject: subjectName,
+          questions: [{ Q: newQuestion, A: newAnswer }],
+          create_mode: "question_create",
+        },
+      };
+      const teacherData = await createTest(payload);
+      if (!teacherData.isSuccessful) {
+        throw new Error(teacherData.message);
+      }
+      setTeacherData(teacherData.data);
+      const tests = teacherData.data[`${teacherCode}`]["tests"];
+
+      const index = tests.findIndex(
+        (test: { test_code: string }) =>
+          test.test_code === selectedTest?.test_code
+      );
+
+      console.log(tests[index]);
+
+      setSelectedTest(tests[index]);
+      if (tests[index]) {
+        setSelectedSubject({
+          [subjectName]: tests[index].subjects[subjectName],
+        });
+      }
+      setNewQuestionMode(false);
+      setNewQuestion("");
+      setNewAnswer("");
+    } catch (e) {
+      console.log("Error in Creating", e);
+    }
+  };
 
   return (
     <div className="max-w-6xl mx-auto min-h-fit">
@@ -98,24 +175,94 @@ export function QuestionDetails({
             )}
           </div>
 
-          <div className="mt-6 flex items-center justify-end gap-x-6">
-            <button
-              type="button"
-              className="text-sm/6 font-semibold text-gray-900"
-              onClick={() => {
-                setSelectedSubject(null);
-                setTeacherMode("test_details");
-              }}
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-            >
-              Add New
-            </button>
-          </div>
+          {newQuestionMode ? (
+            <div className="col-span-full">
+              <label
+                htmlFor="question"
+                className="block text-sm/6 font-medium text-gray-900 mt-4"
+              >
+                Add a new question
+              </label>
+              <div className="mt-2">
+                <input
+                  id="question"
+                  name="question"
+                  type="text"
+                  value={newQuestion}
+                  onChange={(e) => setNewQuestion(e.target.value)}
+                  autoComplete="question"
+                  className="block w-full  rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                />
+                {errors.question && (
+                  <p className="text-red-500 text-sm mt-1">{errors.question}</p>
+                )}
+              </div>
+
+              <label
+                htmlFor="answer"
+                className="block text-sm/6 font-medium text-gray-900 mt-4"
+              >
+                Add an answer
+              </label>
+              <div className="mt-2">
+                <input
+                  id="answer"
+                  name="answer"
+                  type="text"
+                  value={newAnswer}
+                  onChange={(e) => setNewAnswer(e.target.value)}
+                  autoComplete="answer"
+                  className="block w-full  rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                />
+                {errors.answer && (
+                  <p className="text-red-500 text-sm mt-1">{errors.answer}</p>
+                )}
+              </div>
+
+              <div className="mt-6 flex items-center justify-end gap-x-6">
+                <button
+                  type="button"
+                  className="pt-2 text-sm/6 font-semibold text-gray-900"
+                  onClick={() => {
+                    setNewQuestionMode(false);
+                    setNewQuestion("");
+                    setNewAnswer("");
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                  onClick={async () => await handleCreateQuestion()}
+                >
+                  Confirm
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="mt-6 flex items-center justify-end gap-x-6">
+              <button
+                type="button"
+                className="text-sm/6 font-semibold text-gray-900"
+                onClick={() => {
+                  setSelectedSubject(null);
+                  setTeacherMode("test_details");
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                onClick={() => {
+                  setNewQuestionMode(true);
+                }}
+              >
+                Add Questions
+              </button>
+            </div>
+          )}
         </form>
       </div>
     </div>

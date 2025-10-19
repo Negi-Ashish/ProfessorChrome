@@ -66,6 +66,7 @@ export function TeacherComponent({ setRole }: TeacherProp) {
             selectedTest={selectedTest}
             selectedSubject={selectedSubject}
             setSelectedSubject={setSelectedSubject}
+            setSelectedTest={setSelectedTest}
           />
         );
       default:
