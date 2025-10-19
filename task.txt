@@ -4,6 +4,6 @@ Oct - 19th
 
     Create Multiple Question API with Photo Scan.
 
-    Delete Subject API.
+    Delete Subject API. ✅
 
     Delete Question API.
