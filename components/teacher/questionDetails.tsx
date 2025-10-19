@@ -1,15 +1,15 @@
 import React, { Dispatch, SetStateAction, useState } from "react";
 import { PhotoIcon } from "@heroicons/react/24/solid";
 import {
+  Question,
   Subjects,
   TeacherDocument,
   TeacherPayload,
   Test,
 } from "@/structures/interfaceFile";
 import { TeacherMode } from "@/structures/typeFile";
-import { createTest } from "@/api_call/backend_calls";
-
-// import { TeacherDocument } from "@/structures/interfaceFile";
+import { createTest, deleteTest } from "@/api_call/backend_calls";
+import { DeleteButton } from "../delete";
 
 interface QuestionDetailsProps {
   setTeacherMode: Dispatch<SetStateAction<TeacherMode>>;
@@ -102,6 +102,44 @@ export function QuestionDetails({
     }
   };
 
+  const handleDeleteQuestion = async (questionToDelete: Question) => {
+    try {
+      const payload: TeacherPayload = {
+        teacher: {
+          code: teacherCode,
+          test_code: selectedTest?.test_code || "",
+          test_name: selectedTest?.test_name,
+          subject: subjectName,
+          questions: [questionToDelete],
+          mode: "delete_question",
+        },
+      };
+      const teacherData = await deleteTest(payload);
+      if (!teacherData.isSuccessful) {
+        throw new Error(teacherData.message);
+      }
+
+      setTeacherData(teacherData.data);
+      const tests = teacherData.data[`${teacherCode}`]["tests"];
+      const index = tests.findIndex(
+        (test: { test_code: string }) =>
+          test.test_code === selectedTest?.test_code
+      );
+
+      setSelectedTest(tests[index]);
+      if (tests[index]) {
+        setSelectedSubject({
+          [subjectName]: tests[index].subjects[subjectName],
+        });
+      }
+      setNewQuestionMode(false);
+      setNewQuestion("");
+      setNewAnswer("");
+    } catch (e) {
+      console.log("Error in Creating", e);
+    }
+  };
+
   return (
     <div className="max-w-6xl mx-auto min-h-fit">
       <div className="flex flex-wrap gap-4 max-h-[80vh]  p-4 justify-center">
@@ -155,7 +193,7 @@ export function QuestionDetails({
             {selectedSubject && selectedSubject[`${subjectName}`].length > 0 ? (
               selectedSubject[`${subjectName}`].map((item, idx) => (
                 <div key={idx} className="py-5 gap-x-12 first:pt-0 sm:flex">
-                  <ul className="flex-1 space-y-6 sm:last:pb-6 sm:space-y-8">
+                  <ul className="relative flex-1 space-y-6 sm:last:pb-6 sm:space-y-8 pr-10">
                     <li>
                       <summary className="flex items-center justify-between font-semibold text-gray-700">
                         {item.Q}
@@ -165,6 +203,12 @@ export function QuestionDetails({
                         className="mt-3 text-gray-600 leading-relaxed"
                       ></p>
                     </li>
+                    <DeleteButton
+                      handleDelete={async () => {
+                        await handleDeleteQuestion(item);
+                      }}
+                      styling="-mt-2"
+                    />
                   </ul>
                 </div>
               ))

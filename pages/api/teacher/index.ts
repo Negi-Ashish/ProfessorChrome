@@ -3,6 +3,7 @@ import { db } from "../../../lib/firebaseAdmin";
 import teacherMiddleware from "@/middleware/teacher";
 import { errorMessage, successMessage } from "@/utils/responses";
 import { TeacherData } from "@/structures/typeFile";
+import { Question } from "@/structures/interfaceFile";
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
@@ -138,8 +139,33 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
           const existingTest = tests[testIndex];
 
           // We need to delete the subject.
-          if (existingTest?.subjects[subject] && mode == "delete_subject") {
-            delete existingTest.subjects[subject];
+          if (existingTest?.subjects[subject]) {
+            if (mode == "delete_subject") {
+              delete existingTest.subjects[subject];
+            } else if (mode == "delete_question") {
+              const questionData = teacher.questions[0];
+
+              const questions = existingTest.subjects[subject];
+
+              // Find the index of the question that matches both Q and A
+              const index = questions.findIndex(
+                (q: Question) =>
+                  q.Q === questionData.Q && q.A === questionData.A
+              );
+
+              if (index !== -1) {
+                questions.splice(index, 1); // remove the matching question
+              } else {
+                return res
+                  .status(400)
+                  .json(
+                    errorMessage(
+                      "Test Question Does Not Exist",
+                      "The test subject question is not active for this teacher."
+                    )
+                  );
+              }
+            }
           } else {
             return res
               .status(400)
@@ -156,7 +182,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 
           res
             .status(200)
-            .json(successMessage("Subject Deleted", { [teacher.code]: data }));
+            .json(successMessage("Delete Success", { [teacher.code]: data }));
           break;
         }
       }
