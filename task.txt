@@ -6,4 +6,4 @@ Oct - 19th
 
     Delete Subject API. ✅
 
-    Delete Question API.
+    Delete Question API. ✅
