@@ -2,8 +2,17 @@ Oct - 19th
 
     Create Single Question API (Written). ✅
 
-    Create Multiple Question API with Photo Scan.
+    Create Multiple Question API with Photo Scan. ✅
 
     Delete Subject API. ✅
 
     Delete Question API. ✅
+
+
+
+Loader Integration
+
+Catch Errors
+
+Add a more visually engaging loader on the “Upload Image” step — 
+something that feels like a “network connecting” or “data processing” animation.

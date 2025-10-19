@@ -10,6 +10,7 @@ import {
 import { TeacherMode } from "@/structures/typeFile";
 import { createTest, deleteTest } from "@/api_call/backend_calls";
 import { DeleteButton } from "../delete";
+import Image from "next/image";
 
 interface QuestionDetailsProps {
   setTeacherMode: Dispatch<SetStateAction<TeacherMode>>;
@@ -36,10 +37,124 @@ export function QuestionDetails({
   const [errors, setErrors] = useState<{ question?: string; answer?: string }>(
     {}
   );
-
+  // const [image, setImage] = useState<File | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [session, setSession] = useState<any>(null);
+  const [imageExtractedQuestions, setImageExtractedQuestions] =
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    useState<any>(null);
   let subjectName: string = "";
   if (selectedSubject) {
     subjectName = Object.keys(selectedSubject)[0]; // "history"
+  }
+
+  // create session when first needed
+  async function initSession() {
+    if (!window.LanguageModel) return alert("LanguageModel API not available");
+    const s = await window.LanguageModel.create({
+      initialPrompts: [
+        {
+          role: "system",
+          content: "You are a skilled analyst who extracts text from images.",
+        },
+      ],
+      expectedInputs: [{ type: "image" }],
+    });
+    setSession(s);
+    return s;
+  }
+
+  async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Create preview URL
+    const url = URL.createObjectURL(file);
+    setPreview(url);
+    const s = session || (await initSession());
+    await s.append([
+      {
+        role: "user",
+        content: [
+          {
+            type: "text",
+            value: "Here’s an image — extract all text you can see.",
+          },
+          { type: "image", value: file },
+        ],
+      },
+    ]);
+  }
+
+  async function handleAnalyze() {
+    if (!session) return alert("Upload an image first!");
+    console.log("Analyzing...");
+
+    const controller = new AbortController();
+    const signal = controller.signal;
+
+    const schema = {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          Q: { type: "string" },
+          A: { type: "string" },
+        },
+        required: ["Q", "A"],
+      },
+    };
+
+    const analysisPromise = session.prompt(
+      `From the uploaded image, extract all visible questions and answers,
+      but ignore any numbering, indexing, or bullet points before the questions. 
+      Respond ONLY in strict JSON format like:
+      [
+        {"Q": "Question here", "A": "Answer here"},
+        {"Q": "...", "A": "..."}
+      ]`,
+      { responseConstraint: schema },
+      { signal: signal }
+    );
+
+    const timeoutPromise = new Promise((_, reject) =>
+      setTimeout(
+        () => reject(new Error("Taking too long — please try again.")),
+        120000
+      )
+    );
+
+    try {
+      const output = await Promise.race([analysisPromise, timeoutPromise]);
+      console.log("output", output);
+      const resultData = JSON.parse(output as string);
+      console.log("ImageExtractedQuestions", resultData);
+      setImageExtractedQuestions(resultData);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (err: any) {
+      console.error(err);
+      alert(err.message || "Something went wrong during analysis.");
+    } finally {
+      session.destroy();
+    }
+  }
+
+  function uploadCancel() {
+    session.destroy();
+    setImageExtractedQuestions(null);
+    setSession(null);
+  }
+
+  function deleteExtractedQuestion(index: number) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    setImageExtractedQuestions((prev: any) => {
+      if (!prev) return null;
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const updated = prev.filter((_: any, i: number) => i !== index);
+      return updated.length > 0 ? updated : null;
+    });
   }
 
   // Validation function
@@ -58,8 +173,8 @@ export function QuestionDetails({
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleCreateQuestion = async () => {
-    if (!validate()) {
+  const handleCreateQuestion = async (mode?: boolean) => {
+    if (!validate() && !mode) {
       return;
     }
 
@@ -70,7 +185,9 @@ export function QuestionDetails({
           test_code: selectedTest?.test_code || "",
           test_name: selectedTest?.test_name,
           subject: subjectName,
-          questions: [{ Q: newQuestion, A: newAnswer }],
+          questions: mode
+            ? imageExtractedQuestions
+            : [{ Q: newQuestion, A: newAnswer }],
           mode: "question_create",
         },
       };
@@ -97,6 +214,10 @@ export function QuestionDetails({
       setNewQuestionMode(false);
       setNewQuestion("");
       setNewAnswer("");
+      if (mode) {
+        setImageExtractedQuestions(null);
+        setSession(null);
+      }
     } catch (e) {
       console.log("Error in Creating", e);
     }
@@ -154,30 +275,116 @@ export function QuestionDetails({
                   {selectedTest?.test_name} (Code: {selectedTest?.test_code})
                 </label>
                 <div className="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10">
-                  <div className="text-center">
-                    <PhotoIcon
-                      aria-hidden="true"
-                      className="mx-auto size-12 text-gray-300"
-                    />
-                    <div className="mt-4 flex text-sm/6 text-gray-600">
-                      <label
-                        htmlFor="file-upload"
-                        className="relative cursor-pointer rounded-md bg-transparent font-semibold text-indigo-600 focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-indigo-600 hover:text-indigo-500"
-                      >
-                        <span>Upload a file</span>
-                        <input
-                          id="file-upload"
-                          name="file-upload"
-                          type="file"
-                          className="sr-only"
+                  {session ? (
+                    <div className="text-right">
+                      {preview && (
+                        <Image
+                          src={preview}
+                          alt="preview"
+                          width={1000}
+                          height={1000}
+                          className="w-full h-auto object-contain max-w-xl"
                         />
-                      </label>
-                      <p className="pl-1">or drag and drop</p>
+                      )}
+                      {!imageExtractedQuestions ||
+                      imageExtractedQuestions.length == 0 ? (
+                        <div>
+                          <button
+                            type="button"
+                            onClick={async () => uploadCancel()}
+                            className=" px-3 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded mt-5 mr-5"
+                          >
+                            Cancel
+                          </button>
+                          <button
+                            type="button"
+                            onClick={async () => await handleAnalyze()}
+                            className=" px-3 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded mt-5 "
+                          >
+                            Analyze
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="mt-5 text-right max-w-xl">
+                          {imageExtractedQuestions.map(
+                            (item: Question, idx: number) => (
+                              <div
+                                key={idx}
+                                className="py-5 gap-x-12 first:pt-0 sm:flex text-left"
+                              >
+                                <ul className="relative flex-1 space-y-6 sm:last:pb-6 sm:space-y-8 pr-10">
+                                  <li>
+                                    <summary className="flex items-center justify-between font-semibold text-gray-700">
+                                      {item.Q}
+                                    </summary>
+                                    <p
+                                      dangerouslySetInnerHTML={{
+                                        __html: item.A,
+                                      }}
+                                      className="mt-3 text-gray-600 leading-relaxed"
+                                    ></p>
+                                  </li>
+                                  <DeleteButton
+                                    handleDelete={async () => {
+                                      deleteExtractedQuestion(idx);
+                                    }}
+                                    styling="-mt-2"
+                                  />
+                                </ul>
+                              </div>
+                            )
+                          )}
+                          <button
+                            type="button"
+                            onClick={async () => uploadCancel()}
+                            className=" px-3 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded mr-2"
+                          >
+                            Cancel
+                          </button>
+                          <button
+                            type="button"
+                            onClick={async () =>
+                              await handleCreateQuestion(true)
+                            }
+                            className=" px-3 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded"
+                          >
+                            Add Questions
+                          </button>
+                        </div>
+                      )}
+
+                      {/* {result && (
+                        <pre className="whitespace-pre-wrap">{result}</pre>
+                      )} */}
                     </div>
-                    <p className="text-xs/5 text-gray-600">
-                      PNG, JPG, GIF up to 10MB
-                    </p>
-                  </div>
+                  ) : (
+                    <div className="text-center">
+                      <PhotoIcon
+                        aria-hidden="true"
+                        className="mx-auto size-12 text-gray-300"
+                      />
+                      <div className="mt-4 flex text-sm/6 text-gray-600">
+                        <label
+                          htmlFor="file-upload"
+                          className="relative cursor-pointer rounded-md bg-transparent font-semibold text-indigo-600 focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-indigo-600 hover:text-indigo-500"
+                        >
+                          <span>Upload a file</span>
+                          <input
+                            id="file-upload"
+                            name="file-upload"
+                            type="file"
+                            className="sr-only"
+                            accept="image/*"
+                            onChange={handleFileChange}
+                          />
+                        </label>
+                        <p className="pl-1">or drag and drop</p>
+                      </div>
+                      <p className="text-xs/5 text-gray-600">
+                        PNG, JPG, GIF up to 10MB
+                      </p>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -196,7 +403,7 @@ export function QuestionDetails({
                   <ul className="relative flex-1 space-y-6 sm:last:pb-6 sm:space-y-8 pr-10">
                     <li>
                       <summary className="flex items-center justify-between font-semibold text-gray-700">
-                        {item.Q}
+                        {idx + 1}. {item.Q}
                       </summary>
                       <p
                         dangerouslySetInnerHTML={{ __html: item.A }}
@@ -303,7 +510,7 @@ export function QuestionDetails({
                   setNewQuestionMode(true);
                 }}
               >
-                Add Questions
+                Add Question
               </button>
             </div>
           )}
