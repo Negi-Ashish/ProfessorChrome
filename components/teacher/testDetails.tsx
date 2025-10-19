@@ -7,7 +7,8 @@ import {
 } from "@/structures/interfaceFile";
 import { TeacherMode } from "@/structures/typeFile";
 import { ActionCard } from "../ActionCard";
-import { createTest } from "@/api_call/backend_calls";
+import { createTest, deleteTest } from "@/api_call/backend_calls";
+import { DeleteButton } from "../delete";
 
 interface TestDetailsProps {
   setTeacherMode: Dispatch<SetStateAction<TeacherMode>>;
@@ -53,10 +54,41 @@ export function TestDetails({
           test_code: selectedTest?.test_code || "",
           test_name: selectedTest?.test_name,
           subject: newSubjectName,
-          create_mode: "subject_create",
+          mode: "subject_create",
         },
       };
       const teacherData = await createTest(payload);
+      if (!teacherData.isSuccessful) {
+        throw new Error(teacherData.message);
+      }
+
+      setTeacherData(teacherData.data);
+      const tests = teacherData.data[`${teacherCode}`]["tests"];
+      const index = tests.findIndex(
+        (test: { test_code: string }) =>
+          test.test_code === selectedTest?.test_code
+      );
+
+      setSelectedTest(tests[index]);
+      setNewSubjectMode(false);
+      setNewSubjectName("");
+    } catch (e) {
+      console.log("Error in Creating", e);
+    }
+  };
+
+  const handleDeleteSubject = async (subjectToDelete: string) => {
+    try {
+      const payload: TeacherPayload = {
+        teacher: {
+          code: teacherCode,
+          test_code: selectedTest?.test_code || "",
+          test_name: selectedTest?.test_name,
+          subject: subjectToDelete,
+          mode: "delete_subject",
+        },
+      };
+      const teacherData = await deleteTest(payload);
       if (!teacherData.isSuccessful) {
         throw new Error(teacherData.message);
       }
@@ -101,16 +133,23 @@ export function TestDetails({
                   Subjects
                 </h1>
                 {Object.keys(selectedTest.subjects).map((subjectName) => (
-                  <ActionCard
-                    key={subjectName}
-                    name={subjectName}
-                    handleClick={() => {
-                      setSelectedSubject({
-                        [subjectName]: selectedTest.subjects[subjectName],
-                      });
-                      setTeacherMode("question_details");
-                    }}
-                  />
+                  <div className="relative" key={subjectName}>
+                    <ActionCard
+                      name={subjectName}
+                      handleClick={() => {
+                        setSelectedSubject({
+                          [subjectName]: selectedTest.subjects[subjectName],
+                        });
+                        setTeacherMode("question_details");
+                      }}
+                    />
+                    <DeleteButton
+                      handleDelete={async () => {
+                        await handleDeleteSubject(subjectName);
+                      }}
+                      styling="mt-1"
+                    />
+                  </div>
                 ))}
               </div>
             ) : (

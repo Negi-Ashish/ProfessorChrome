@@ -46,3 +46,18 @@ export const createTest = async (
   const data: TeacherResponse = await res.json();
   return data;
 };
+
+export const deleteTest = async (
+  payload: TeacherPayload
+): Promise<TeacherResponse> => {
+  const res = await fetch(`/api/teacher`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
+
+  const data: TeacherResponse = await res.json();
+  return data;
+};

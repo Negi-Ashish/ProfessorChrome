@@ -52,7 +52,7 @@ export function AddTests({
           code: teacherCode,
           test_code: testCode,
           test_name: testName,
-          create_mode: "test_create",
+          mode: "test_create",
         },
       };
       const teacherData = await createTest(payload);

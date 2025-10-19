@@ -37,7 +37,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         const testName = teacher.test_name;
         const subject = teacher.subject; // e.g. "history"
         const questions = teacher.questions; // e.g. [{ q1: "...", a1: "..." }]
-        const mode = teacher.create_mode;
+        const mode = teacher.mode;
 
         // Getting the item
         const docRef = req.body.docRef;
@@ -105,11 +105,61 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         break;
       }
 
-      case "PUT":
-        // Update a teacher by id (expecting req.body to have id + fields to update)
-        res.status(200).json({ Teachers: "PUT MADE" });
-        break;
+      case "PUT": {
+        const { teacher } = req.body;
+        const testCode = teacher.test_code; // e.g. "asdfg"
+        const subject = teacher.subject; // e.g. "history"
+        const mode = teacher.mode;
 
+        // Getting the item
+        const docRef = req.body.docRef;
+        const docSnap = req.body.docSnap;
+
+        // Get current data
+        const data = docSnap.data();
+        const tests = data?.tests || [];
+
+        // Find test by test_code
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const testIndex = tests.findIndex((t: any) => t.test_code === testCode);
+
+        // If test doesn't exist, return error
+        if (testIndex === -1) {
+          return res
+            .status(400)
+            .json(
+              errorMessage(
+                "Test Code Does Not Exist",
+                "The test code is not active for this teacher."
+              )
+            );
+        } else {
+          // Case when Test exists
+          const existingTest = tests[testIndex];
+
+          // We need to delete the subject.
+          if (existingTest?.subjects[subject] && mode == "delete_subject") {
+            delete existingTest.subjects[subject];
+          } else {
+            return res
+              .status(400)
+              .json(
+                errorMessage(
+                  "Test Subject Does Not Exist",
+                  "The test subject is not active for this teacher."
+                )
+              );
+          }
+
+          // Update Firestore document
+          await docRef.update({ tests });
+
+          res
+            .status(200)
+            .json(successMessage("Subject Deleted", { [teacher.code]: data }));
+          break;
+        }
+      }
       case "DELETE": {
         const { teacher } = req.body;
 

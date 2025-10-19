@@ -25,7 +25,8 @@ const teacherMiddleware = (handler: NextApiHandler) => {
           req.body = id;
           console.log("teacherMiddleware GET Request");
           return handler(req, res);
-        case "POST": {
+        case "POST":
+        case "PUT": {
           // Handle POST request
           const { teacher } = req.body;
 
@@ -34,11 +35,11 @@ const teacherMiddleware = (handler: NextApiHandler) => {
             !teacher.code ||
             !teacher.test_name ||
             !teacher.test_code ||
-            !teacher.create_mode
+            !teacher.mode
           ) {
             return res
               .status(400)
-              .json({ error: "Teacher post object is invalid." });
+              .json({ error: "Teacher object is invalid." });
           }
           // Checking if teacher code already exists
           const docId = teacher.code;
@@ -63,10 +64,10 @@ const teacherMiddleware = (handler: NextApiHandler) => {
 
           return handler(req, res);
         }
-        case "PUT":
-          // Handle PUT request
-          console.log("teacherMiddleware PUT Request");
-          return handler(req, res);
+        // case "PUT":
+        //   // Handle PUT request
+        //   console.log("teacherMiddleware PUT Request");
+        //   return handler(req, res);
         case "DELETE":
           // Handle DELETE request
           const { teacher } = req.body;

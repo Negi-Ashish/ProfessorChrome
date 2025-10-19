@@ -71,7 +71,7 @@ export function QuestionDetails({
           test_name: selectedTest?.test_name,
           subject: subjectName,
           questions: [{ Q: newQuestion, A: newAnswer }],
-          create_mode: "question_create",
+          mode: "question_create",
         },
       };
       const teacherData = await createTest(payload);

@@ -11,7 +11,7 @@ export interface TeacherPayload {
     subject?: string; // Optional: subject name
     questions?: Question[]; // Optional: array of questions for that subject
     test_name?: string;
-    create_mode?: string;
+    mode?: string;
   };
 }
 
