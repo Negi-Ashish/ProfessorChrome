@@ -9,10 +9,51 @@ Oct - 19th
     Delete Question API. ✅
 
 
+Oct - 20th
 
-Loader Integration
+    Update the Create Test API to include handling for the Tests collection in Firebase.
 
-Catch Errors
+    Add a student UI that includes an offline mode, leaderboards, and a "Take Test" feature.
 
-Add a more visually engaging loader on the “Upload Image” step — 
-something that feels like a “network connecting” or “data processing” animation.
+    Implement offline test functionality.
+
+    Implement Take Test functionality.
+
+    Develop a Complete Test API that logs the student’s results into the leaderboard for the 
+    respective test subject.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Note: Tasks to do later.
+
+    Loader Integration
+
+    Catch Errors
+    -Including the person is offline or having internet issues.
+
+    Add a more visually engaging loader on the “Upload Image” step — 
+    something that feels like a “network connecting” or “data processing” animation.
+
+Additional features to consider if time permits:
+
+    Timed test-taking and automatic time tracking.
+
+    Implement MCQ.
