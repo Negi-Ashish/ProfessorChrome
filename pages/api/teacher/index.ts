@@ -57,6 +57,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
           tests.push({
             test_code: testCode,
             test_name: testName,
+            subjects: {},
           });
         } else {
           // Case when its test creating mode and that test code is already existing.
@@ -84,6 +85,47 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
               );
           } else {
             if (mode == "subject_create") {
+              // Code to create the test subject in Tests collection.
+
+              const test_details = {
+                test_name: testName,
+                subjects: [
+                  {
+                    subject_name: subject,
+                    leader_board: [],
+                  },
+                ],
+              };
+
+              const testRef = db.collection("Tests").doc(testCode);
+              const testSnap = await testRef.get();
+
+              if (!testSnap.exists) {
+                // Create new test if it doesn't exist
+                await testRef.set({ test_details });
+                console.log("HERE4");
+              } else {
+                // Test exists — update subjects only if not already present
+                const existing = testSnap.data();
+                const subjects = existing?.test_details.subjects || [];
+
+                const alreadyExists = subjects.some(
+                  (s: { subject_name: string }) => s.subject_name === subject
+                );
+
+                if (!alreadyExists) {
+                  await testRef.update({
+                    "test_details.subjects": [
+                      ...subjects,
+                      {
+                        subject_name: subject,
+                        leader_board: [],
+                      },
+                    ],
+                  });
+                }
+              }
+
               existingTest.subjects[subject] = [];
             }
             // Add new Questions
@@ -97,6 +139,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
         }
 
         // Update Firestore document
+
         await docRef.update({ tests });
 
         res
