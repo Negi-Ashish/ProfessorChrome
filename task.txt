@@ -31,6 +31,16 @@ Oct - 20th
 
 
 
+Tasks:
+    
+    Sync Delete API with the new Tests Collection Logic.
+
+
+
+
+
+
+
 
 
 
