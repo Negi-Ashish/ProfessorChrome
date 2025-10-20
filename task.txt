@@ -13,7 +13,7 @@ Oct - 20th
 
     Update the Create Test API to include handling for the Tests collection in Firebase. ✅
 
-    Add a student UI that includes an offline mode, leaderboards, and a "Take Test" feature.
+    Add a student UI that includes an offline mode, leaderboards, and a "Take Test" feature. ✅
 
     Implement offline test functionality.
 
@@ -38,11 +38,14 @@ Oct - 20th
 
 
 
+Note:
+    For students taking a test, generate a unique random ID and assign it to each of them 
+    so they can use it to view their results, even if multiple students share the same name.
 
 
 
 
-Note: Tasks to do later.
+Tasks to do later:
 
     Loader Integration
 
@@ -57,3 +60,5 @@ Additional features to consider if time permits:
     Timed test-taking and automatic time tracking.
 
     Implement MCQ.
+
+    Communicate to user that we are in offline mode or online mode.
