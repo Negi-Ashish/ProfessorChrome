@@ -59,8 +59,6 @@ export function StudentComponent({ setRole }: StudentProp) {
 
   const isOnline: boolean = useOnlineStatus();
 
-  console.log("isOnline", isOnline);
-
   return (
     <div className=" flex items-center">
       {studentMode == "" && (
@@ -116,7 +114,9 @@ export function StudentComponent({ setRole }: StudentProp) {
           </div>
         </div>
       ) : (
-        <div className="">{renderTeacherMode()}</div>
+        <div className="overflow-y-auto overflow-x-hidden custom-scrollbar">
+          {renderTeacherMode()}
+        </div>
       )}
     </div>
   );
