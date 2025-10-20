@@ -29,21 +29,30 @@ export function ToggleComponent(props: ToggleProp) {
                     className="flex-shrink-0"
                     onClick={() => props.setRole("teacher")}
                   >
-                    <Card title="Teacher" />
+                    <Card
+                      styling="hover:bg-green-300 cursor-pointer"
+                      title="Teacher"
+                    />
                   </button>
                   {/* Student Button */}
                   <button
                     className="flex-shrink-0"
                     onClick={() => props.setRole("student")}
                   >
-                    <Card title="Student" />
+                    <Card
+                      styling="hover:bg-green-300 cursor-pointer"
+                      title="Student"
+                    />
                   </button>
                   {/* Admin Button */}
                   <button
                     className="flex-shrink-0"
                     onClick={() => props.setRole("admin")}
                   >
-                    <Card title="Admin" />
+                    <Card
+                      styling="hover:bg-green-300 cursor-pointer"
+                      title="Admin"
+                    />
                   </button>
                 </div>
               </div>

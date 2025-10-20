@@ -50,7 +50,7 @@ export function Tests({
           <div key={test.test_code} className="relative flex-shrink-0">
             <Card
               title={test.test_name}
-              description=""
+              styling="hover:bg-green-300 cursor-pointer"
               handleClick={() => {
                 setTeacherMode("test_details");
                 setSelectedTest(test);

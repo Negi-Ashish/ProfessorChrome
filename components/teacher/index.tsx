@@ -28,7 +28,7 @@ export function TeacherComponent({ setRole }: TeacherProp) {
       case "view":
         return (
           <div>
-            <BackButton handleBack={() => setRole("")} />
+            <BackButton styling="top-6 left-3" handleBack={() => setRole("")} />
             <Tests
               teacherCode={teacherCode}
               teacherData={teacherData}
@@ -78,7 +78,7 @@ export function TeacherComponent({ setRole }: TeacherProp) {
     <div className="relative flex flex-col items-center overflow-auto overflow-x-hidden custom-scrollbar">
       {!teacherData && (
         <div>
-          <BackButton handleBack={() => setRole("")} />
+          <BackButton styling="top-6 left-3" handleBack={() => setRole("")} />
           <CodeInput
             setTeacherCode={setTeacherCode}
             setTeacherMode={setTeacherMode}
