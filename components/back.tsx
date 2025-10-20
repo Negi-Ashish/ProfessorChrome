@@ -3,13 +3,14 @@ import { FiArrowLeft } from "react-icons/fi";
 
 type BackButtonProps = {
   handleBack: () => any;
+  styling?: string;
 };
 
-export function BackButton({ handleBack }: BackButtonProps) {
+export function BackButton({ handleBack, styling }: BackButtonProps) {
   return (
     <div
       onClick={handleBack}
-      className="absolute top-6 left-3 flex items-center text-[20px] cursor-pointer text-gray-700 hover:text-gray-900 transition-colors"
+      className={`absolute ${styling} flex items-center text-[20px] cursor-pointer text-gray-700 hover:text-gray-900 transition-colors`}
     >
       <FiArrowLeft />
     </div>
