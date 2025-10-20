@@ -8,3 +8,5 @@ export type TeacherMode =
   | "add"
   | "test_details"
   | "question_details";
+
+export type StudentMode = "" | "offline" | "online" | "leaderboard";
