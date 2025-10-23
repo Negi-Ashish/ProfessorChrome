@@ -1,7 +1,8 @@
 import { Question } from "@/structures/interfaceFile";
 
 export type Test = {
-  English: Question[];
+  English?: Question[];
+  Geography?: Question[];
 };
 
 export const Test_One = {
@@ -274,6 +275,51 @@ export const Test_Six = {
   ],
 };
 
+export const Test_Seven = {
+  Geography: [
+    {
+      Q: "What are the main components of the Earth's atmosphere?",
+      A: "The main components are nitrogen, oxygen, argon, carbon dioxide, and trace gases.",
+    },
+    {
+      Q: "What causes the change of seasons on Earth?",
+      A: "The tilt of the Earth's axis and its revolution around the Sun cause the change of seasons.",
+    },
+    {
+      Q: "What is the difference between weather and climate?",
+      A: "Weather refers to short-term atmospheric conditions, while climate is the average weather over a long period.",
+    },
+    {
+      Q: "Name the layers of the Earth.",
+      A: "The Earth has three main layers: crust, mantle, and core.",
+    },
+    {
+      Q: "What are tectonic plates?",
+      A: "Tectonic plates are large pieces of the Earth's crust that move slowly over the mantle.",
+    },
+    {
+      Q: "What is the water cycle?",
+      A: "The water cycle describes how water evaporates, condenses into clouds, and returns to the Earth as precipitation.",
+    },
+    {
+      Q: "What are renewable and non-renewable resources?",
+      A: "Renewable resources can be replaced naturally, like solar and wind energy; non-renewable resources like coal and oil cannot be replaced quickly.",
+    },
+    {
+      Q: "What is soil erosion and how can it be prevented?",
+      A: "Soil erosion is the removal of topsoil by wind or water. It can be prevented by planting trees and using contour plowing.",
+    },
+    {
+      Q: "Name some major landforms on Earth.",
+      A: "Major landforms include mountains, plateaus, plains, valleys, and deserts.",
+    },
+    {
+      Q: "Why is sustainable development important?",
+      A: "Sustainable development ensures that natural resources are used responsibly so future generations can meet their needs.",
+    },
+  ],
+};
+
 export type TestsType = {
   "English I": Test;
   "English II": Test;
@@ -281,6 +327,7 @@ export type TestsType = {
   "English IV": Test;
   "English V": Test;
   "English VI": Test;
+  "Geography I": Test;
 };
 
 export const Tests: TestsType = {
@@ -290,6 +337,7 @@ export const Tests: TestsType = {
   "English IV": Test_Four,
   "English V": Test_Five,
   "English VI": Test_Six,
+  "Geography I": Test_Seven,
 };
 
 const noCorrectionMessages = [

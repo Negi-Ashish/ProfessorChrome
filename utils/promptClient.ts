@@ -1,12 +1,41 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 let languageModelSession: any | null = null;
 
-export async function initPromptAPI() {
+export async function initPromptAPI(isEnglish: boolean) {
   // Check if the API is available
   if (typeof window === "undefined" || !("LanguageModel" in window)) {
     console.warn("LanguageModel API not available in this environment.");
     return null;
   }
+
+  const content = `You are an experienced teacher and evaluator.
+Your goal is to assess conceptual understanding — not memorization, phrasing, or order.
+
+Evaluation rules:
+1. Give a score out of 10 based purely on correctness and completeness of ideas.
+2. If the student's answer includes all the key components of the correct answer, give a full score (10/10) — regardless of order, phrasing, or synonyms.
+3. Do not deduct marks for:
+   - Different order of words or phrases
+   - Minor grammatical differences
+   - Equivalent wording (e.g., “O₂” vs “oxygen”)
+4. Only reduce marks if one or more key components are missing or wrong.
+5. Provide a short, encouraging feedback message explaining the reasoning.
+6. Maintain a friendly, mentor-like tone.
+7. The evaluation is conceptual, not sequential.
+
+Focus only on whether the student demonstrates clear understanding of the concept.
+If they do, they deserve full marks.`;
+
+  const content_english = `You are an experienced English teacher and writing evaluator.
+
+Your task:
+1. Evaluate the student's answer on grammar, spelling, punctuation, capitalization, prepositions, and missing words.
+2. Score the answer out of 10 based on clarity, correctness, and fluency.
+3. Provide constructive feedback in a friendly, encouraging tone.
+4. Provide a polished rephrased version of the student's answer.
+6. Focus purely on the student's writing quality.
+7. Also check if the answer is related to the question being asked.
+`;
 
   try {
     // Initialize a new LanguageModel session
@@ -14,19 +43,13 @@ export async function initPromptAPI() {
       initialPrompts: [
         {
           role: "system",
-          content: `You are an experienced teacher and evaluator.
-Your task is to:
-1. Evaluate a student's answer based on the provided question.
-2. Give marks out of 10.
-3. Provide a detailed explanation of the mistakes or areas of improvement.
-4. Offer constructive feedback on how the student can write a better answer next time.
-5. Maintain a friendly, encouraging tone — like a mentor guiding the student toward improvement.`,
+          content: isEnglish ? content_english : content,
         },
       ],
       expectedInputs: [
         {
           type: "text",
-          languages: ["en" /* system prompt */, "ja" /* user prompt */],
+          languages: ["en"],
         },
       ],
     });

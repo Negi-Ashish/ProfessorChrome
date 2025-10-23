@@ -25,46 +25,70 @@ export function OfflineTest({
   const [answers, setAnswers] = useState<string[]>([]);
 
   const questions =
-    selectedTest && selectedTest in Tests ? Tests[selectedTest]["English"] : [];
+    selectedTest && selectedTest in Tests
+      ? Object.values(Tests[selectedTest])[0]
+      : [];
 
-  // async function testAPI() {
-  //   const teacher = await initPromptAPI();
-  //   if (teacher) {
-  //     const controller = new AbortController();
-  //     const signal = controller.signal;
+  const subject =
+    selectedTest && selectedTest in Tests
+      ? Object.keys(Tests[selectedTest])[0]
+      : "";
 
-  //     const evaluationSchema = {
-  //       type: "object",
-  //       properties: {
-  //         score: {
-  //           type: "number",
-  //           description: "Marks given to the student's answer (out of 10).",
-  //           minimum: 0,
-  //           maximum: 10,
-  //         },
-  //         feedback: {
-  //           type: "string",
-  //           description:
-  //             "Explanation of what was good or wrong in the answer and why the score was given.",
-  //         },
-  //         rephrase: {
-  //           type: "string",
-  //           description:
-  //             "A better or corrected version of the student's answer, written in a clear and natural way.",
-  //         },
+  async function testAPI() {
+    const teacher = await initPromptAPI(subject == "English");
+    if (teacher) {
+      const controller = new AbortController();
+      const signal = controller.signal;
 
-  //       },
-  //       required: ["score", "feedback", "rephrase"],
-  //     };
+      const evaluationSchema = {
+        type: "object",
+        properties: {
+          score: {
+            type: "number",
+            description: "Marks given to the student's answer (out of 10).",
+            minimum: 0,
+            maximum: 10,
+          },
+          isCorrect: {
+            type: "boolean",
+            description: "Provided answer is correct or in correct.",
+          },
+          feedback: {
+            type: "string",
+            description:
+              "Explanation of what was good or wrong in the answer and why the score was given.",
+          },
+          rephrase: {
+            type: "string",
+            description:
+              "A better or corrected version of the student's answer, written in a clear and natural way.",
+          },
+        },
+        required: ["score", "feedback", "rephrase", "isCorrect"],
+      };
 
-  //     const result = await teacher.prompt(
-  //       `Question: What is the capital of France?\nAnswer: The capital of France is London.`,
-  //       { responseConstraint: evaluationSchema },
-  //       { signal: signal }
-  //     );
-  //     console.log(result);
-  //   }
-  // }
+      if (subject == "English") {
+        const result = await teacher.prompt(
+          `Subject: ${subject}\n
+        Question: ${questions[currentIndex].Q}\n
+        Students Answer: ${answers[currentIndex]}`,
+          { responseConstraint: evaluationSchema },
+          { signal: signal }
+        );
+        console.log("English", result);
+      } else {
+        const result = await teacher.prompt(
+          `Subject: ${subject}\n
+        Question: ${questions[currentIndex].Q}\n
+        Correct Answer: ${questions[currentIndex].A}\n
+        Students Answer: ${answers[currentIndex]}`,
+          { responseConstraint: evaluationSchema },
+          { signal: signal }
+        );
+        console.log("Others", result);
+      }
+    }
+  }
 
   async function handleProofread() {
     if (answers[currentIndex] == undefined) {
@@ -186,7 +210,7 @@ export function OfflineTest({
                 </button> */}
 
                 <button
-                  onClick={async () => await handleProofread()}
+                  onClick={async () => await testAPI()}
                   disabled={result[currentIndex] ? true : false}
                   className={`px-4 py-2 bg-blue-600 text-white rounded absolute right-7 bottom-0 
                          ${result[currentIndex] && "bg-gray-400"}
