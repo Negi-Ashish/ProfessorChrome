@@ -14,4 +14,17 @@ interface Window {
       expectedInputs?: { type: string }[];
     }): Promise<LanguageModelSession>;
   };
+  Proofreader?: typeof Proofreader;
+}
+
+class Proofreader {
+  proofread(input: string): Promise<{
+    correctedInput: string;
+    corrections: {
+      startIndex: number;
+      endIndex: number;
+      correction: string;
+      explanation?: string;
+    }[];
+  }>;
 }

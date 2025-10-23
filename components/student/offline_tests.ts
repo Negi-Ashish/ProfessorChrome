@@ -273,3 +273,50 @@ export const Test_Six = {
     },
   ],
 };
+
+export type TestsType = {
+  "English I": Test;
+  "English II": Test;
+  "English III": Test;
+  "English IV": Test;
+  "English V": Test;
+  "English VI": Test;
+};
+
+export const Tests: TestsType = {
+  "English I": Test_One,
+  "English II": Test_Two,
+  "English III": Test_Three,
+  "English IV": Test_Four,
+  "English V": Test_Five,
+  "English VI": Test_Six,
+};
+
+const noCorrectionMessages = [
+  "No correction needed.",
+  "Your sentence is already correct.",
+  "Looks perfect — no changes required.",
+  "No improvements necessary.",
+  "This statement is error-free.",
+  "Your sentence is correct as it is.",
+  "Nicely done — nothing to fix here.",
+  "Flawless! No edits required.",
+  "Perfect as written.",
+  "Everything looks great — no correction needed.",
+];
+
+export function getRandomNoCorrectionMessage() {
+  const index = Math.floor(Math.random() * noCorrectionMessages.length);
+  return noCorrectionMessages[index];
+}
+
+// Assign color per correction type
+export const typeToColor: Record<string, string> = {
+  grammar: "bg-yellow-200",
+  punctuation: "bg-blue-200",
+  spelling: "bg-red-200",
+  capitalization: "bg-pink-200",
+  preposition: "bg-orange-200",
+  "missing-words": "bg-purple-200",
+  default: "bg-green-200",
+};

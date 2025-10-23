@@ -28,7 +28,7 @@ export function TeacherComponent({ setRole }: TeacherProp) {
       case "view":
         return (
           <div>
-            <BackButton styling="top-6 left-3" handleBack={() => setRole("")} />
+            <BackButton styling="top-17" handleBack={() => setRole("")} />
             <Tests
               teacherCode={teacherCode}
               teacherData={teacherData}

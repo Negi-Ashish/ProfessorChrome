@@ -3,22 +3,30 @@ import { BackButton } from "../back";
 import { StudentMode } from "@/structures/typeFile";
 import { Card } from "../card";
 import { OfflineTest } from "./offline";
+import { destroyProofreader, initProofreader } from "@/utils/proofreaderClient";
 
 interface StudentProp {
-  text?: string; // optional prop
   setRole: Dispatch<SetStateAction<string>>;
 }
 
 export function StudentComponent({ setRole }: StudentProp) {
   const [studentMode, setStudentMode] = useState<StudentMode>("");
-
-  const renderTeacherMode = () => {
+  const [proofreaderSession, setProofReaderSession] =
+    useState<Proofreader | null>(null);
+  const renderStudentMode = () => {
     switch (studentMode) {
       case "offline":
         return (
           <div>
-            <BackButton handleBack={() => setStudentMode("")} />
-            <OfflineTest />
+            {proofreaderSession && (
+              <div>
+                <BackButton handleBack={() => setStudentMode("")} />
+                <OfflineTest
+                  proofreaderSession={proofreaderSession}
+                  setProofReaderSession={setProofReaderSession}
+                />
+              </div>
+            )}
           </div>
         );
       case "online":
@@ -58,6 +66,22 @@ export function StudentComponent({ setRole }: StudentProp) {
   }
 
   const isOnline: boolean = useOnlineStatus();
+
+  useEffect(() => {
+    async function fetchData() {
+      const proofreader = await initProofreader();
+      setProofReaderSession(proofreader);
+    }
+
+    fetchData();
+    return () => {
+      if (studentMode == "") {
+        console.log("ok");
+        destroyProofreader();
+        setProofReaderSession(null);
+      } // cleanup on unmount
+    };
+  }, [studentMode]);
 
   return (
     <div className=" flex items-center">
@@ -115,7 +139,7 @@ export function StudentComponent({ setRole }: StudentProp) {
         </div>
       ) : (
         <div className="overflow-y-auto overflow-x-hidden custom-scrollbar">
-          {renderTeacherMode()}
+          {renderStudentMode()}
         </div>
       )}
     </div>
