@@ -15,12 +15,18 @@ Oct - 20th
 
     Add a student UI that includes an offline mode, leaderboards, and a "Take Test" feature. ✅
 
-    Implement offline test functionality.
+    Implement offline test functionality. ✅
 
-    Implement Take Test functionality.
-
+    Implement Take Test functionality. 
+    
     Develop a Complete Test API that logs the student’s results into the leaderboard for the 
-    respective test subject.
+    respective test subject. 
+
+Oct - 23rd
+
+    Planned for different types of mode eg: 1 at a time, Full test at a time.
+
+
 
 
 
