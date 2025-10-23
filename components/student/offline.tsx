@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import {
   Tests,
   TestsType,
@@ -6,7 +6,7 @@ import {
 } from "./offline_tests";
 
 import { initProofreader } from "@/utils/proofreaderClient";
-import { initPromptAPI } from "@/utils/promptClient";
+import { destroyPromptAPI, initPromptAPI } from "@/utils/promptClient";
 
 interface OfflineProps {
   proofreaderSession: Proofreader | null;
@@ -21,8 +21,14 @@ export function OfflineTest({
   const [selectedTest, setSelectedTest] = useState<"" | keyof TestsType>("");
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [result, setResult] = useState<any>([]);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [promptResult, setPromptResult] = useState<any>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<string[]>([]);
+
+  const [promptSession, setPromptSession] =
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    useState<any>(null);
 
   const questions =
     selectedTest && selectedTest in Tests
@@ -34,8 +40,38 @@ export function OfflineTest({
       ? Object.keys(Tests[selectedTest])[0]
       : "";
 
-  async function testAPI() {
-    const teacher = await initPromptAPI(subject == "English");
+  useEffect(() => {
+    async function fetchData() {
+      const teacher = await initPromptAPI(subject == "English");
+      setPromptSession(teacher);
+    }
+
+    if (subject != "") {
+      fetchData();
+    }
+
+    return () => {
+      destroyPromptAPI();
+      setPromptSession(null);
+    }; // cleanup on unmount
+  }, [subject]);
+
+  async function ChromeAPI() {
+    if (subject == "English") {
+      await handleProofread();
+    }
+    await promptAPI();
+  }
+
+  async function promptAPI() {
+    let teacher, prompt_result;
+    if (!promptSession) {
+      console.log("Creating new inside function");
+      teacher = await initPromptAPI(subject == "English");
+    } else {
+      teacher = promptSession;
+    }
+
     if (teacher) {
       const controller = new AbortController();
       const signal = controller.signal;
@@ -68,25 +104,35 @@ export function OfflineTest({
       };
 
       if (subject == "English") {
-        const result = await teacher.prompt(
+        prompt_result = await teacher.prompt(
           `Subject: ${subject}\n
         Question: ${questions[currentIndex].Q}\n
-        Students Answer: ${answers[currentIndex]}`,
+        Students Answer: ${answers[currentIndex]}
+        
+        Explain the core concept. Return only plain text — no Markdown, no asterisks, no formatting.
+`,
           { responseConstraint: evaluationSchema },
           { signal: signal }
         );
-        console.log("English", result);
+        console.log("English", prompt_result);
       } else {
-        const result = await teacher.prompt(
+        prompt_result = await teacher.prompt(
           `Subject: ${subject}\n
         Question: ${questions[currentIndex].Q}\n
         Correct Answer: ${questions[currentIndex].A}\n
-        Students Answer: ${answers[currentIndex]}`,
+        Students Answer: ${answers[currentIndex]}
+        
+        Explain the core concept. Return only plain text — no Markdown, no asterisks, no formatting.
+`,
           { responseConstraint: evaluationSchema },
           { signal: signal }
         );
-        console.log("Others", result);
+        console.log("Others", prompt_result);
       }
+      const prompt_result_json = JSON.parse(prompt_result as string);
+      const newResult = [...promptResult];
+      newResult[currentIndex] = prompt_result_json;
+      setPromptResult(newResult);
     }
   }
 
@@ -176,9 +222,36 @@ export function OfflineTest({
                   </div>
                 )}
 
+                {promptResult[currentIndex] && (
+                  <div className="mt-2 break-words whitespace-pre-wrap text-gray-600 leading-relaxed">
+                    {promptResult[currentIndex].feedback && (
+                      <div>
+                        <p className="font-bold text-black">Score:</p>
+                        <p className="">{promptResult[currentIndex].score}</p>
+                        <p className="font-bold text-black">
+                          Needs Improvement:
+                        </p>
+                        <p className="">
+                          {promptResult[currentIndex].isCorrect ? "No" : "Yes"}
+                        </p>
+                        <p className="font-bold text-black">Feedback:</p>
+                        <p className="">
+                          {promptResult[currentIndex].feedback}
+                        </p>
+                        <p className="font-bold text-black">
+                          Rephrased Version:
+                        </p>
+                        <p className="">
+                          {promptResult[currentIndex].rephrase}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                )}
+
                 <textarea
                   value={answers[currentIndex] || ""}
-                  disabled={result[currentIndex] ? true : false}
+                  disabled={promptResult[currentIndex] ? true : false}
                   onChange={handleAnswerChange}
                   placeholder="Enter your answer..."
                   className="relative block w-full mt-4 rounded-md bg-white px-3 py-2 text-base text-gray-900 
@@ -210,13 +283,13 @@ export function OfflineTest({
                 </button> */}
 
                 <button
-                  onClick={async () => await testAPI()}
-                  disabled={result[currentIndex] ? true : false}
+                  onClick={async () => await ChromeAPI()}
+                  disabled={promptResult[currentIndex] ? true : false}
                   className={`px-4 py-2 bg-blue-600 text-white rounded absolute right-7 bottom-0 
-                         ${result[currentIndex] && "bg-gray-400"}
+                         ${promptResult[currentIndex] && "bg-gray-400"}
                      `}
                 >
-                  Proofread
+                  Analyze
                 </button>
 
                 {currentIndex === questions.length - 1 ? (
