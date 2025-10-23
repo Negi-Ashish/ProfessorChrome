@@ -340,22 +340,162 @@ export const Tests: TestsType = {
   "Geography I": Test_Seven,
 };
 
-const noCorrectionMessages = [
-  "No correction needed.",
-  "Your sentence is already correct.",
-  "Looks perfect — no changes required.",
-  "No improvements necessary.",
-  "This statement is error-free.",
-  "Your sentence is correct as it is.",
-  "Nicely done — nothing to fix here.",
-  "Flawless! No edits required.",
-  "Perfect as written.",
-  "Everything looks great — no correction needed.",
-];
+const scoreMessages: Record<number, string[]> = {
+  0: [
+    "Don't be discouraged — this is just the beginning!",
+    "Everyone starts somewhere — keep practicing!",
+    "Take this as a learning opportunity.",
+    "Mistakes are a step toward improvement.",
+    "Stay motivated! Next attempt will be better.",
+    "It's okay to struggle — you'll improve!",
+    "Keep trying — every effort counts!",
+    "Learning takes time, don't give up!",
+    "Remember: failure is the first step to success.",
+    "Use this as a guide to focus on weak areas.",
+  ],
+  1: [
+    "Don't worry, keep practicing and you'll improve!",
+    "Everyone starts somewhere — keep trying!",
+    "It's a tough start, but you can do better next time!",
+    "Learning takes time — don't give up!",
+    "Keep working at it, progress comes step by step!",
+    "Not your best, but every mistake is a lesson!",
+    "Challenge accepted — next time will be better!",
+    "Stay motivated! Improvement is on the way.",
+    "Take this as a starting point to grow!",
+    "Keep your head up — practice makes perfect!",
+  ],
+  2: [
+    "A bit better, but there's room for improvement!",
+    "You're making progress, keep going!",
+    "Mistakes happen, learn from them!",
+    "Keep practicing to boost your score!",
+    "Small steps lead to big improvements!",
+    "Don't lose heart — improvement is coming!",
+    "Stay focused, you can do better next time!",
+    "Every attempt teaches you something new!",
+    "Keep trying, your effort counts!",
+    "Work on weak areas, you'll get there!",
+  ],
+  3: [
+    "You're getting there, keep improving!",
+    "Some progress! Focus on your weak points.",
+    "You're learning — don't stop now!",
+    "Room for improvement, but good effort!",
+    "Keep practicing, you'll get better!",
+    "Not bad, but aim higher next time!",
+    "Every mistake is a learning opportunity.",
+    "Keep going, improvement is coming!",
+    "You're on the right track, stay focused!",
+    "Good effort! Keep building on it.",
+  ],
+  4: [
+    "Decent effort! Keep pushing forward.",
+    "You're improving — don't stop now!",
+    "Some correct answers, room to grow.",
+    "Keep practicing, you're getting better!",
+    "Not perfect, but good attempt!",
+    "Learning is happening, keep it up!",
+    "You're making progress, focus more!",
+    "Steady progress! Aim for higher scores.",
+    "You’re on your way, keep practicing!",
+    "Good attempt! Keep striving for better.",
+  ],
+  5: [
+    "Halfway there! Nice effort.",
+    "Good job, but room for improvement.",
+    "You're making progress — keep practicing.",
+    "Solid effort, aim for even better next time!",
+    "You're improving, stay consistent.",
+    "Not bad, keep refining your answers!",
+    "Nice work! Focus on weak areas to improve.",
+    "You're doing well — push a bit further.",
+    "Keep practicing, you can get higher!",
+    "Good attempt! Keep aiming higher.",
+  ],
+  6: [
+    "Good work! You're getting stronger.",
+    "Well done! Minor improvements can make a difference.",
+    "Nice effort, keep refining your skills.",
+    "You're improving steadily, keep going!",
+    "Solid performance, aim a little higher next time.",
+    "Great attempt! Keep practicing for perfection.",
+    "You're on the right track — keep it up!",
+    "Good score! Keep pushing for excellence.",
+    "Nice work! Focus on small details to improve.",
+    "You're doing well — keep going!",
+  ],
+  7: [
+    "Great job! You're doing really well.",
+    "Well done! Only minor tweaks needed.",
+    "You're strong in many areas — keep going!",
+    "Nice effort! Keep refining your knowledge.",
+    "Good work! Almost at the top.",
+    "You're improving consistently — great job!",
+    "Impressive work! Keep it up.",
+    "Good performance — aim for perfection next time.",
+    "You're doing really well, stay focused!",
+    "Keep it up! You're very close to full marks.",
+  ],
+  8: [
+    "Excellent work! Very well done.",
+    "Great score! Minor improvements only.",
+    "You're strong in most areas — excellent job!",
+    "Amazing effort! Keep refining for perfection.",
+    "Well done! Almost perfect.",
+    "Impressive performance! Just a few tweaks needed.",
+    "You're doing great — keep up the consistency!",
+    "Excellent! Keep practicing to stay sharp.",
+    "Very good work! Focus on small details to reach 10/10.",
+    "Awesome! You're doing really well.",
+  ],
+  9: [
+    "Outstanding! So close to perfection!",
+    "Fantastic job! Only minor adjustments needed.",
+    "Excellent work! You're nearly perfect.",
+    "Impressive! Keep up the high standard.",
+    "Great effort! Just a tiny bit away from full marks.",
+    "Superb! You’re almost at the top.",
+    "Amazing performance! One more step to perfection.",
+    "Well done! Very few errors remain.",
+    "Excellent! Keep maintaining this level.",
+    "You're doing amazing! Almost perfect.",
+  ],
+  10: [
+    "Excellent! Perfect score!",
+    "Outstanding! You nailed it!",
+    "Brilliant work — keep it up!",
+    "Amazing! You aced the test!",
+    "Fantastic! Full marks achieved!",
+    "Perfect performance! Well done!",
+    "You're a star! 10/10!",
+    "Impressive! You got everything right!",
+    "Exceptional! Keep up the great work!",
+    "Top-notch! You’ve mastered it!",
+  ],
+};
 
-export function getRandomNoCorrectionMessage() {
-  const index = Math.floor(Math.random() * noCorrectionMessages.length);
-  return noCorrectionMessages[index];
+// Function to normalize score and pick a random message
+export function getRandomScoreMessageFromTotal(
+  score: number,
+  totalMarks: number
+) {
+  if (totalMarks <= 0) return "Invalid total marks.";
+
+  // Step 1: Convert to 0-10 scale
+  const normalized = (score / totalMarks) * 10;
+
+  // Step 2: Round to nearest integer
+  const roundedScore = Math.round(normalized);
+
+  // Step 3: Clamp between 0 and 10
+  const finalScore = Math.max(0, Math.min(10, roundedScore));
+
+  // Step 4: Pick random message for the final score
+  const messages = scoreMessages[finalScore];
+  if (!messages || messages.length === 0) return "Good effort!";
+  const index = Math.floor(Math.random() * messages.length);
+  return messages[index];
 }
 
 // Assign color per correction type

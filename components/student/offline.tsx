@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import {
+  getRandomScoreMessageFromTotal,
   Tests,
   TestsType,
-  getRandomNoCorrectionMessage,
 } from "./offline_tests";
 
 import { initProofreader } from "@/utils/proofreaderClient";
@@ -19,16 +20,15 @@ export function OfflineTest({
 }: OfflineProps) {
   // AoBrNWZcn2CqtE1uE9nSbCjI+TBQLZN/PJJxNwo9ToEhvaUl0Yoon2gb9W6B06R+s7DgE3Vpxeb/pF0DXZVmsAcAAABTeyJvcmlnaW4iOiJodHRwOi8vbG9jYWxob3N0OjMwMDAiLCJmZWF0dXJlIjoiQUlQcm9vZnJlYWRlckFQSSIsImV4cGlyeSI6MTc3OTE0ODgwMH0=
   const [selectedTest, setSelectedTest] = useState<"" | keyof TestsType>("");
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   const [result, setResult] = useState<any>([]);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   const [promptResult, setPromptResult] = useState<any>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<string[]>([]);
-
-  const [promptSession, setPromptSession] =
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    useState<any>(null);
+  const [showScore, setShowScore] = useState(true);
+  const [total, setTotal] = useState<any>(null);
+  const [promptSession, setPromptSession] = useState<any>(null);
 
   const questions =
     selectedTest && selectedTest in Tests
@@ -178,6 +178,24 @@ export function OfflineTest({
     }
   };
 
+  const handleSubmit = () => {
+    const totalScore = promptResult.reduce(
+      (sum: any, item: { score: any }) => sum + item.score,
+      0
+    );
+    // Average score (optional)
+    const totalQuestions = promptResult.length;
+    const totalMarks = totalQuestions * 10;
+    const message = getRandomScoreMessageFromTotal(totalScore, totalMarks);
+    setTotal({
+      message,
+      totalMarks,
+      totalScore,
+      totalQuestions,
+    });
+    setShowScore(true);
+  };
+
   return (
     <div className="max-w-6xl mx-auto min-h-fit">
       <div className="flex flex-wrap gap-4 max-h-[80vh]  p-4 justify-center">
@@ -203,22 +221,10 @@ export function OfflineTest({
 
                 {result[currentIndex] && (
                   <div className="mt-4 break-words whitespace-pre-wrap text-gray-600 leading-relaxed">
-                    {result[currentIndex].correctedInput ==
-                    answers[currentIndex] ? (
-                      <div>
-                        <p className="font-bold text-black">Perfect Answer!</p>
-                        <p className="">{getRandomNoCorrectionMessage()}</p>
-                      </div>
-                    ) : (
-                      <div>
-                        <p className="font-bold text-black">
-                          Improved Version:{" "}
-                        </p>
-                        <p className="">
-                          {result[currentIndex].correctedInput}
-                        </p>
-                      </div>
-                    )}
+                    <div>
+                      <p className="font-bold text-black">Improved Version: </p>
+                      <p className="">{result[currentIndex].correctedInput}</p>
+                    </div>
                   </div>
                 )}
 
@@ -294,7 +300,7 @@ export function OfflineTest({
 
                 {currentIndex === questions.length - 1 ? (
                   <button
-                    onClick={() => console.log("Submit answers:", answers)}
+                    onClick={handleSubmit}
                     className="absolute -right-20 top-40 px-4 py-2 rounded-md bg-indigo-600 hover:bg-green-700 text-white"
                     title="Finish Test"
                   >
@@ -310,6 +316,26 @@ export function OfflineTest({
                   </button>
                 )}
               </div>
+
+              {/* Modal */}
+              {showScore && total && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                  <div className="bg-white p-6 rounded shadow-lg max-w-sm w-full text-center relative">
+                    <h2 className="text-2xl font-bold mb-4">
+                      {total.totalScore} / {total.totalMarks}
+                    </h2>
+                    <p>Total Questions answered: {total.totalQuestions}</p>
+                    <h2 className="text-2xl font-bold mb-4">{total.message}</h2>
+
+                    <button
+                      onClick={() => setShowScore(false)}
+                      className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                    >
+                      Close
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>
