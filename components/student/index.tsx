@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { BackButton } from "../back";
 import { StudentMode } from "@/structures/typeFile";
 import { Card } from "../card";
 import { OfflineTest } from "./offline";
 import { destroyProofreader, initProofreader } from "@/utils/proofreaderClient";
+import { TestsType } from "./offline_tests";
 
 interface StudentProp {
   setRole: Dispatch<SetStateAction<string>>;
@@ -11,22 +13,82 @@ interface StudentProp {
 
 export function StudentComponent({ setRole }: StudentProp) {
   const [studentMode, setStudentMode] = useState<StudentMode>("");
+  const [selectedTest, setSelectedTest] = useState<"" | keyof TestsType>("");
+  const [result, setResult] = useState<any>([]);
+  const [promptResult, setPromptResult] = useState<any>([]);
+  const [answers, setAnswers] = useState<string[]>([]);
+  const [pressedAnalyze, setPressedAnalyze] = useState<boolean[]>([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [showScore, setShowScore] = useState(false);
+  const [total, setTotal] = useState<any>(null);
+  const [promptSession, setPromptSession] = useState<any>(null);
+
   const [proofreaderSession, setProofReaderSession] =
     useState<Proofreader | null>(null);
+
+  const testState = {
+    selectedTest,
+    setSelectedTest,
+    result,
+    setResult,
+    promptResult,
+    setPromptResult,
+    answers,
+    setAnswers,
+    pressedAnalyze,
+    setPressedAnalyze,
+    currentIndex,
+    setCurrentIndex,
+    showScore,
+    setShowScore,
+    total,
+    setTotal,
+  };
+
+  const chromeAPI = {
+    proofreaderSession,
+    setProofReaderSession,
+    promptSession,
+    setPromptSession,
+  };
+
+  const isTestReset = () => {
+    return (
+      selectedTest === "" &&
+      result.length === 0 &&
+      promptResult.length === 0 &&
+      answers.length === 0 &&
+      pressedAnalyze.length === 0 &&
+      currentIndex === 0 &&
+      showScore === false &&
+      total === null &&
+      promptSession === null
+    );
+  };
+
+  const handleBack = () => {
+    if (isTestReset()) {
+      setStudentMode("");
+    } else {
+      setSelectedTest("");
+      setResult([]);
+      setPromptResult([]);
+      setAnswers([]);
+      setPressedAnalyze([]);
+      setCurrentIndex(0);
+      setShowScore(false);
+      setTotal(null);
+      setPromptSession(null);
+    }
+  };
+
   const renderStudentMode = () => {
     switch (studentMode) {
       case "offline":
         return (
           <div>
-            {proofreaderSession && (
-              <div>
-                <BackButton handleBack={() => setStudentMode("")} />
-                <OfflineTest
-                  proofreaderSession={proofreaderSession}
-                  setProofReaderSession={setProofReaderSession}
-                />
-              </div>
-            )}
+            <BackButton handleBack={() => handleBack()} />
+            <OfflineTest testState={testState} chromeAPI={chromeAPI} />
           </div>
         );
       case "online":

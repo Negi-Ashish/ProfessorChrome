@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
+import React, { useEffect, useMemo } from "react";
 import {
   getRandomScoreMessageFromTotal,
   Tests,
@@ -10,34 +10,47 @@ import { initProofreader } from "@/utils/proofreaderClient";
 import { destroyPromptAPI, initPromptAPI } from "@/utils/promptClient";
 import TypingLoader from "../TypingLoader";
 interface OfflineProps {
-  proofreaderSession: Proofreader | null;
-  setProofReaderSession: Dispatch<SetStateAction<Proofreader | null>>;
+  testState: any;
+  chromeAPI: any;
 }
 
-export function OfflineTest({
-  proofreaderSession,
-  setProofReaderSession,
-}: OfflineProps) {
+export function OfflineTest({ testState, chromeAPI }: OfflineProps) {
   // AoBrNWZcn2CqtE1uE9nSbCjI+TBQLZN/PJJxNwo9ToEhvaUl0Yoon2gb9W6B06R+s7DgE3Vpxeb/pF0DXZVmsAcAAABTeyJvcmlnaW4iOiJodHRwOi8vbG9jYWxob3N0OjMwMDAiLCJmZWF0dXJlIjoiQUlQcm9vZnJlYWRlckFQSSIsImV4cGlyeSI6MTc3OTE0ODgwMH0=
-  const [selectedTest, setSelectedTest] = useState<"" | keyof TestsType>("");
+  const {
+    selectedTest,
+    setSelectedTest,
+    result,
+    setResult,
+    promptResult,
+    setPromptResult,
+    answers,
+    setAnswers,
+    pressedAnalyze,
+    setPressedAnalyze,
+    currentIndex,
+    setCurrentIndex,
+    showScore,
+    setShowScore,
+    total,
+    setTotal,
+  } = testState;
 
-  const [result, setResult] = useState<any>([]);
+  const {
+    proofreaderSession,
+    setProofReaderSession,
+    promptSession,
+    setPromptSession,
+  } = chromeAPI;
 
-  const [promptResult, setPromptResult] = useState<any>([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [answers, setAnswers] = useState<string[]>([]);
-  const [showScore, setShowScore] = useState(true);
-  const [total, setTotal] = useState<any>(null);
-  const [promptSession, setPromptSession] = useState<any>(null);
-
-  const questions =
-    selectedTest && selectedTest in Tests
-      ? Object.values(Tests[selectedTest])[0]
+  const questions = useMemo(() => {
+    return selectedTest && selectedTest in Tests
+      ? Object.values(Tests[selectedTest as keyof TestsType])[0]
       : [];
+  }, [selectedTest]);
 
   const subject =
     selectedTest && selectedTest in Tests
-      ? Object.keys(Tests[selectedTest])[0]
+      ? Object.keys(Tests[selectedTest as keyof TestsType])[0]
       : "";
 
   useEffect(() => {
@@ -54,9 +67,19 @@ export function OfflineTest({
       destroyPromptAPI();
       setPromptSession(null);
     }; // cleanup on unmount
-  }, [subject]);
+  }, [subject, setPromptSession]);
+
+  useEffect(() => {
+    if (questions && questions.length > 0) {
+      setPressedAnalyze(new Array(questions.length).fill(false));
+    }
+  }, [questions, setPressedAnalyze]);
 
   async function ChromeAPI() {
+    const newResult = [...pressedAnalyze];
+    newResult[currentIndex] = true;
+    setPressedAnalyze(newResult);
+
     if (subject == "English") {
       await handleProofread();
     }
@@ -168,23 +191,27 @@ export function OfflineTest({
 
   const handleNext = () => {
     if (currentIndex < questions.length - 1) {
-      setCurrentIndex((prev) => prev + 1);
+      setCurrentIndex((prev: number) => prev + 1);
     }
   };
 
   const handlePrev = () => {
     if (currentIndex > 0) {
-      setCurrentIndex((prev) => prev - 1);
+      setCurrentIndex((prev: number) => prev - 1);
     }
   };
 
   const handleSubmit = () => {
-    const totalScore = promptResult.reduce(
+    const validResults = promptResult.filter(
+      (item: { score: null }) => item && item.score != null
+    );
+
+    const totalScore = validResults.reduce(
       (sum: any, item: { score: any }) => sum + item.score,
       0
     );
     // Average score (optional)
-    const totalQuestions = promptResult.length;
+    const totalQuestions = validResults.length;
     const totalMarks = totalQuestions * 10;
     const message = getRandomScoreMessageFromTotal(totalScore, totalMarks);
     setTotal({
@@ -219,17 +246,19 @@ export function OfflineTest({
                   {currentIndex + 1}. {questions[currentIndex].Q}
                 </h2>
 
-                <TypingLoader />
-                {result[currentIndex] && (
+                {result[currentIndex] ? (
                   <div className="mt-4 break-words whitespace-pre-wrap text-gray-600 leading-relaxed">
                     <div>
                       <p className="font-bold text-black">Improved Version: </p>
                       <p className="">{result[currentIndex].correctedInput}</p>
                     </div>
                   </div>
+                ) : (
+                  pressedAnalyze[currentIndex] &&
+                  subject == "English" && <TypingLoader />
                 )}
 
-                {promptResult[currentIndex] && (
+                {promptResult[currentIndex] ? (
                   <div className="mt-2 break-words whitespace-pre-wrap text-gray-600 leading-relaxed">
                     {promptResult[currentIndex].feedback && (
                       <div>
@@ -254,11 +283,13 @@ export function OfflineTest({
                       </div>
                     )}
                   </div>
+                ) : (
+                  pressedAnalyze[currentIndex] && <TypingLoader />
                 )}
 
                 <textarea
                   value={answers[currentIndex] || ""}
-                  disabled={promptResult[currentIndex] ? true : false}
+                  disabled={pressedAnalyze[currentIndex]}
                   onChange={handleAnswerChange}
                   placeholder="Enter your answer..."
                   className="relative block w-full mt-4 rounded-md bg-white px-3 py-2 text-base text-gray-900 
@@ -281,19 +312,12 @@ export function OfflineTest({
                 >
                   ⬅️
                 </button>
-                {/* <button
-                  onClick={handleNext}
-                  className="absolute right-7 bottom-0 px-4 py-2 rounded-md bg-indigo-600 hover:bg-indigo-700 text-white"
-                  title="AI Analysis"
-                >
-                  Analyze
-                </button> */}
 
                 <button
                   onClick={async () => await ChromeAPI()}
-                  disabled={promptResult[currentIndex] ? true : false}
+                  disabled={pressedAnalyze[currentIndex]}
                   className={`px-4 py-2 bg-blue-600 text-white rounded absolute right-7 bottom-0 
-                         ${promptResult[currentIndex] && "bg-gray-400"}
+                         ${pressedAnalyze[currentIndex] && "bg-gray-400"}
                      `}
                 >
                   Analyze
@@ -302,16 +326,36 @@ export function OfflineTest({
                 {currentIndex === questions.length - 1 ? (
                   <button
                     onClick={handleSubmit}
-                    className="absolute -right-20 top-40 px-4 py-2 rounded-md bg-indigo-600 hover:bg-green-700 text-white"
+                    className={`absolute -right-20 top-40  px-4 py-2 rounded-md  text-white 
+                       ${
+                         pressedAnalyze[currentIndex] &&
+                         !promptResult[currentIndex]
+                           ? "bg-gray-400"
+                           : "bg-indigo-600 hover:bg-indigo-700"
+                       } `}
                     title="Finish Test"
+                    disabled={
+                      pressedAnalyze[currentIndex] &&
+                      !promptResult[currentIndex]
+                    }
                   >
                     🏁
                   </button>
                 ) : (
                   <button
                     onClick={handleNext}
-                    className="absolute -right-20 top-40  px-4 py-2 rounded-md bg-indigo-600 hover:bg-indigo-700 text-white"
+                    className={`absolute -right-20 top-40  px-4 py-2 rounded-md  text-white 
+                       ${
+                         pressedAnalyze[currentIndex] &&
+                         !promptResult[currentIndex]
+                           ? "bg-gray-400"
+                           : "bg-indigo-600 hover:bg-indigo-700"
+                       } `}
                     title="Next Question"
+                    disabled={
+                      pressedAnalyze[currentIndex] &&
+                      !promptResult[currentIndex]
+                    }
                   >
                     ➡️
                   </button>
@@ -322,7 +366,7 @@ export function OfflineTest({
               {showScore && total && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                   <div className="bg-white p-6 rounded shadow-lg max-w-sm w-full text-center relative">
-                    <h2 className="text-2xl font-bold mb-4">
+                    <h2 className="text-2xl font-bold">
                       {total.totalScore} / {total.totalMarks}
                     </h2>
                     <p>Total Questions answered: {total.totalQuestions}</p>
