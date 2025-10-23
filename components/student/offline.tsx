@@ -8,7 +8,7 @@ import {
 
 import { initProofreader } from "@/utils/proofreaderClient";
 import { destroyPromptAPI, initPromptAPI } from "@/utils/promptClient";
-
+import TypingLoader from "../TypingLoader";
 interface OfflineProps {
   proofreaderSession: Proofreader | null;
   setProofReaderSession: Dispatch<SetStateAction<Proofreader | null>>;
@@ -219,6 +219,7 @@ export function OfflineTest({
                   {currentIndex + 1}. {questions[currentIndex].Q}
                 </h2>
 
+                <TypingLoader />
                 {result[currentIndex] && (
                   <div className="mt-4 break-words whitespace-pre-wrap text-gray-600 leading-relaxed">
                     <div>
