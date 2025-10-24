@@ -3,7 +3,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { BackButton } from "../back";
 import { StudentMode } from "@/structures/typeFile";
 import { Card } from "../card";
-import { OfflineTest } from "./offline";
+import { OfflineTest } from "./offline_one_at_a_time";
 import { destroyProofreader, initProofreader } from "@/utils/proofreaderClient";
 import { TestsType } from "./offline_tests";
 
