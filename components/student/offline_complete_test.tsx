@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   getRandomScoreMessageFromTotal,
   Tests,
@@ -7,7 +7,8 @@ import {
 } from "./offline_tests";
 
 import { destroyPromptAPI, initPromptAPI } from "@/utils/promptClient";
-import TypingLoader from "../TypingLoader";
+import TypingLoader from "../Loader/TypingLoader";
+import SpinnerLoader from "../Loader/SpinnerLoader";
 interface OfflineProps {
   testState: any;
   chromeAPI: any;
@@ -15,6 +16,7 @@ interface OfflineProps {
 
 export function OfflineCompleteTest({ testState, chromeAPI }: OfflineProps) {
   // AoBrNWZcn2CqtE1uE9nSbCjI+TBQLZN/PJJxNwo9ToEhvaUl0Yoon2gb9W6B06R+s7DgE3Vpxeb/pF0DXZVmsAcAAABTeyJvcmlnaW4iOiJodHRwOi8vbG9jYWxob3N0OjMwMDAiLCJmZWF0dXJlIjoiQUlQcm9vZnJlYWRlckFQSSIsImV4cGlyeSI6MTc3OTE0ODgwMH0=
+  const [showCompleteTestMsg, setShowCompleteTestMsg] = useState(false);
   const {
     selectedTest,
     setSelectedTest,
@@ -192,10 +194,11 @@ Return only plain text — no Markdown formatting.`,
 
   const handleSubmit = async () => {
     if (!areAllAnswersValid()) {
-      alert("All questions must be answered before submitting the test.");
+      setShowCompleteTestMsg(true);
       return;
     }
     setPressedAnalyze([true]);
+    setShowScore(true);
     // const promptResult = await promptAPIBulk();
     const chrome_api_response = await ChromeAPI();
 
@@ -219,7 +222,6 @@ Return only plain text — no Markdown formatting.`,
       totalScore,
       totalQuestions,
     });
-    setShowScore(true);
   };
 
   return (
@@ -326,21 +328,63 @@ Return only plain text — no Markdown formatting.`,
               </div>
 
               {/* Modal */}
-              {showScore && total && (
+              {showScore && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                   <div className="bg-white p-6 rounded shadow-lg max-w-sm w-full text-center relative">
-                    <h2 className="text-2xl font-bold">
-                      {total.totalScore} / {total.totalMarks}
-                    </h2>
-                    <p>Total Questions answered: {total.totalQuestions}</p>
-                    <h2 className="text-2xl font-bold mb-4">{total.message}</h2>
+                    {total ? (
+                      <div>
+                        <h2 className="text-2xl font-bold">
+                          {total.totalScore} / {total.totalMarks}
+                        </h2>
+                        <p>Total Questions answered: {total.totalQuestions}</p>
+                        <h2 className="text-2xl font-bold mb-4">
+                          {total.message}
+                        </h2>
+                        <button
+                          onClick={() => setShowScore(false)}
+                          className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                        >
+                          Close
+                        </button>
+                      </div>
+                    ) : (
+                      <div>
+                        <SpinnerLoader />
+                      </div>
+                    )}
+                    {showCompleteTestMsg && (
+                      <div>
+                        <h2 className="text-2xl font-bold mb-4">
+                          All questions must be answered before submitting the
+                          test.
+                        </h2>
+                        <button
+                          onClick={() => setShowCompleteTestMsg(false)}
+                          className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                        >
+                          Close
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
 
-                    <button
-                      onClick={() => setShowScore(false)}
-                      className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-                    >
-                      Close
-                    </button>
+              {showCompleteTestMsg && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                  <div className="bg-white p-6 rounded shadow-lg max-w-sm w-full text-center relative">
+                    <div>
+                      <p className="text-xl font-bold mb-4">
+                        All questions must be answered before submitting the
+                        test.
+                      </p>
+                      <button
+                        onClick={() => setShowCompleteTestMsg(false)}
+                        className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                      >
+                        Close
+                      </button>
+                    </div>
                   </div>
                 </div>
               )}
