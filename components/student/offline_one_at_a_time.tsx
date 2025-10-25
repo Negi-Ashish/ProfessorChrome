@@ -14,7 +14,7 @@ interface OfflineProps {
   chromeAPI: any;
 }
 
-export function OfflineTest({ testState, chromeAPI }: OfflineProps) {
+export function OfflineTestOneByOne({ testState, chromeAPI }: OfflineProps) {
   // AoBrNWZcn2CqtE1uE9nSbCjI+TBQLZN/PJJxNwo9ToEhvaUl0Yoon2gb9W6B06R+s7DgE3Vpxeb/pF0DXZVmsAcAAABTeyJvcmlnaW4iOiJodHRwOi8vbG9jYWxob3N0OjMwMDAiLCJmZWF0dXJlIjoiQUlQcm9vZnJlYWRlckFQSSIsImV4cGlyeSI6MTc3OTE0ODgwMH0=
   const {
     selectedTest,
@@ -248,10 +248,17 @@ export function OfflineTest({ testState, chromeAPI }: OfflineProps) {
 
                 {result[currentIndex] ? (
                   <div className="mt-4 break-words whitespace-pre-wrap text-gray-600 leading-relaxed">
-                    <div>
-                      <p className="font-bold text-black">Improved Version: </p>
-                      <p className="">{result[currentIndex].correctedInput}</p>
-                    </div>
+                    {result[currentIndex].correctedInput !==
+                      answers[currentIndex] && (
+                      <div>
+                        <p className="font-bold text-black">
+                          Improved Version:{" "}
+                        </p>
+                        <p className="">
+                          {result[currentIndex].correctedInput}
+                        </p>
+                      </div>
+                    )}
                   </div>
                 ) : (
                   pressedAnalyze[currentIndex] &&
@@ -302,9 +309,15 @@ export function OfflineTest({ testState, chromeAPI }: OfflineProps) {
               <div className="flex ">
                 <button
                   onClick={handlePrev}
-                  disabled={currentIndex === 0}
+                  disabled={
+                    currentIndex === 0 ||
+                    (pressedAnalyze[currentIndex] &&
+                      !promptResult[currentIndex])
+                  }
                   className={`absolute -left-20 top-40 px-4 py-2 rounded-md text-white ${
-                    currentIndex === 0
+                    currentIndex === 0 ||
+                    (pressedAnalyze[currentIndex] &&
+                      !promptResult[currentIndex])
                       ? "bg-gray-400"
                       : "bg-indigo-600 hover:bg-indigo-700"
                   }`}
