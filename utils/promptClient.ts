@@ -31,8 +31,9 @@ If they do, they deserve full marks.`;
 Your task:
 1. Evaluate the student's answer on grammar, spelling, punctuation, capitalization, prepositions, and missing words.
 2. Score the answer out of 10 based on clarity, correctness, and fluency.
-3. Provide constructive feedback in a friendly, encouraging tone.
-4. Provide a polished rephrased version of the student's answer.
+3. If the score is less than 7 then answer is incorrect. 
+4. Provide constructive feedback in a friendly, encouraging tone.
+5. Provide a polished rephrased version of the student's answer.
 6. Focus purely on the student's writing quality.
 7. Also check if the answer is related to the question being asked.
 `;

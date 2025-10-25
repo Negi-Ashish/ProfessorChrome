@@ -3,9 +3,10 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { BackButton } from "../back";
 import { StudentMode } from "@/structures/typeFile";
 import { Card } from "../card";
-import { OfflineTest } from "./offline_one_at_a_time";
+import { OfflineTestOneByOne } from "./offline_one_at_a_time";
 import { destroyProofreader, initProofreader } from "@/utils/proofreaderClient";
 import { TestsType } from "./offline_tests";
+import { OfflineCompleteTest } from "./offline_complete_test";
 
 interface StudentProp {
   setRole: Dispatch<SetStateAction<string>>;
@@ -84,11 +85,18 @@ export function StudentComponent({ setRole }: StudentProp) {
 
   const renderStudentMode = () => {
     switch (studentMode) {
-      case "offline":
+      case "offline_oneByone":
         return (
           <div>
             <BackButton handleBack={() => handleBack()} />
-            <OfflineTest testState={testState} chromeAPI={chromeAPI} />
+            <OfflineTestOneByOne testState={testState} chromeAPI={chromeAPI} />
+          </div>
+        );
+      case "offline_complete_test":
+        return (
+          <div>
+            <BackButton handleBack={() => handleBack()} />
+            <OfflineCompleteTest testState={testState} chromeAPI={chromeAPI} />
           </div>
         );
       case "online":
@@ -159,10 +167,19 @@ export function StudentComponent({ setRole }: StudentProp) {
               {/* Offline Tests */}
               <button
                 className="flex-shrink-0"
-                onClick={() => setStudentMode("offline")}
+                onClick={() => setStudentMode("offline_oneByone")}
               >
                 <Card
-                  title="Offline Tests"
+                  title="One by one (Offline)"
+                  styling="hover:bg-green-300 cursor-pointer"
+                />
+              </button>
+              <button
+                className="flex-shrink-0"
+                onClick={() => setStudentMode("offline_complete_test")}
+              >
+                <Card
+                  title="Complete Test (Offline)"
                   styling="hover:bg-green-300 cursor-pointer"
                 />
               </button>

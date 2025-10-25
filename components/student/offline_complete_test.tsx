@@ -6,7 +6,6 @@ import {
   TestsType,
 } from "./offline_tests";
 
-import { initProofreader } from "@/utils/proofreaderClient";
 import { destroyPromptAPI, initPromptAPI } from "@/utils/promptClient";
 import TypingLoader from "../TypingLoader";
 interface OfflineProps {
@@ -14,13 +13,11 @@ interface OfflineProps {
   chromeAPI: any;
 }
 
-export function OfflineTest({ testState, chromeAPI }: OfflineProps) {
+export function OfflineCompleteTest({ testState, chromeAPI }: OfflineProps) {
   // AoBrNWZcn2CqtE1uE9nSbCjI+TBQLZN/PJJxNwo9ToEhvaUl0Yoon2gb9W6B06R+s7DgE3Vpxeb/pF0DXZVmsAcAAABTeyJvcmlnaW4iOiJodHRwOi8vbG9jYWxob3N0OjMwMDAiLCJmZWF0dXJlIjoiQUlQcm9vZnJlYWRlckFQSSIsImV4cGlyeSI6MTc3OTE0ODgwMH0=
   const {
     selectedTest,
     setSelectedTest,
-    result,
-    setResult,
     promptResult,
     setPromptResult,
     answers,
@@ -35,12 +32,7 @@ export function OfflineTest({ testState, chromeAPI }: OfflineProps) {
     setTotal,
   } = testState;
 
-  const {
-    proofreaderSession,
-    setProofReaderSession,
-    promptSession,
-    setPromptSession,
-  } = chromeAPI;
+  const { promptSession, setPromptSession } = chromeAPI;
 
   const questions = useMemo(() => {
     return selectedTest && selectedTest in Tests
@@ -69,98 +61,17 @@ export function OfflineTest({ testState, chromeAPI }: OfflineProps) {
     }; // cleanup on unmount
   }, [subject, setPromptSession]);
 
-  useEffect(() => {
-    if (questions && questions.length > 0) {
-      setPressedAnalyze(new Array(questions.length).fill(false));
-    }
-  }, [questions, setPressedAnalyze]);
-
   async function ChromeAPI() {
-    const newResult = [...pressedAnalyze];
-    newResult[currentIndex] = true;
-    setPressedAnalyze(newResult);
+    // if (subject == "English") {
+    //   await handleProofread();
+    // }
+    const prompt_result = await promptAPIBulk();
 
-    if (subject == "English") {
-      await handleProofread();
-    }
-    await promptAPI();
-  }
-
-  async function promptAPI() {
-    let teacher, prompt_result;
-    if (!promptSession) {
-      console.log("Creating new inside function");
-      teacher = await initPromptAPI(subject == "English");
-    } else {
-      teacher = promptSession;
-    }
-
-    if (teacher) {
-      const controller = new AbortController();
-      const signal = controller.signal;
-
-      const evaluationSchema = {
-        type: "object",
-        properties: {
-          score: {
-            type: "number",
-            description: "Marks given to the student's answer (out of 10).",
-            minimum: 0,
-            maximum: 10,
-          },
-          isCorrect: {
-            type: "boolean",
-            description: "Provided answer is correct or in correct.",
-          },
-          feedback: {
-            type: "string",
-            description:
-              "Explanation of what was good or wrong in the answer and why the score was given.",
-          },
-          rephrase: {
-            type: "string",
-            description:
-              "A better or corrected version of the student's answer, written in a clear and natural way.",
-          },
-        },
-        required: ["score", "feedback", "rephrase", "isCorrect"],
-      };
-
-      if (subject == "English") {
-        prompt_result = await teacher.prompt(
-          `Subject: ${subject}\n
-        Question: ${questions[currentIndex].Q}\n
-        Students Answer: ${answers[currentIndex]}
-        
-        Explain the core concept. Return only plain text — no Markdown, no asterisks, no formatting.
-`,
-          { responseConstraint: evaluationSchema },
-          { signal: signal }
-        );
-        console.log("English", prompt_result);
-      } else {
-        prompt_result = await teacher.prompt(
-          `Subject: ${subject}\n
-        Question: ${questions[currentIndex].Q}\n
-        Correct Answer: ${questions[currentIndex].A}\n
-        Students Answer: ${answers[currentIndex]}
-        
-        Explain the core concept. Return only plain text — no Markdown, no asterisks, no formatting.
-`,
-          { responseConstraint: evaluationSchema },
-          { signal: signal }
-        );
-        console.log("Others", prompt_result);
-      }
-      const prompt_result_json = JSON.parse(prompt_result as string);
-      const newResult = [...promptResult];
-      newResult[currentIndex] = prompt_result_json;
-      setPromptResult(newResult);
-    }
+    return prompt_result;
   }
 
   async function promptAPIBulk() {
-    let teacher, prompt_result;
+    let teacher, prompt_result, prompt_result_array;
     if (!promptSession) {
       console.log("Creating new inside function");
       teacher = await initPromptAPI(subject == "English");
@@ -238,34 +149,12 @@ Return only plain text — no Markdown formatting.`,
 
       console.log("Batch Results", prompt_result);
 
-      const prompt_result_array = JSON.parse(prompt_result as string);
+      prompt_result_array = JSON.parse(prompt_result as string);
 
       setPromptResult(prompt_result_array);
     }
-  }
 
-  async function handleProofread() {
-    if (answers[currentIndex] == undefined) {
-      alert("Please write a answer.");
-    }
-    const text = answers[currentIndex];
-    if (!proofreaderSession) {
-      console.log("Creating New Session");
-      const proofreader = await initProofreader();
-      setProofReaderSession(proofreader);
-      const proofreadResult = await proofreader?.proofread(text);
-      console.log(proofreadResult);
-      const newResult = [...result];
-      newResult[currentIndex] = proofreadResult;
-      setResult(newResult);
-    } else {
-      console.log("Old Session");
-      const proofreadResult = await proofreaderSession?.proofread(text);
-      const newResult = [...result];
-      newResult[currentIndex] = proofreadResult;
-      setResult(newResult);
-      console.log(proofreadResult);
-    }
+    return prompt_result_array;
   }
 
   const handleAnswerChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -286,28 +175,51 @@ Return only plain text — no Markdown formatting.`,
     }
   };
 
+  const areAllAnswersValid = () => {
+    // Check if both arrays exist and have same length
+    if (!Array.isArray(answers) || !Array.isArray(questions)) return false;
+    if (answers.length !== questions.length) return false;
+
+    // Check every element is a non-empty string and not a hole
+    return answers.every(
+      (ans, index) =>
+        answers.hasOwnProperty(index) &&
+        typeof ans === "string" &&
+        ans.trim().length > 0
+    );
+  };
+  console.log(total);
+
   const handleSubmit = async () => {
-    // const validResults = promptResult.filter(
-    //   (item: { score: null }) => item && item.score != null
-    // );
+    if (!areAllAnswersValid()) {
+      alert("All questions must be answered before submitting the test.");
+      return;
+    }
+    setPressedAnalyze([true]);
+    // const promptResult = await promptAPIBulk();
+    const chrome_api_response = await ChromeAPI();
 
-    // const totalScore = validResults.reduce(
-    //   (sum: any, item: { score: any }) => sum + item.score,
-    //   0
-    // );
-    // // Average score (optional)
-    // const totalQuestions = validResults.length;
-    // const totalMarks = totalQuestions * 10;
-    // const message = getRandomScoreMessageFromTotal(totalScore, totalMarks);
-    // setTotal({
-    //   message,
-    //   totalMarks,
-    //   totalScore,
-    //   totalQuestions,
-    // });
-    // setShowScore(true);
+    console.log("chrome_api_response", chrome_api_response);
 
-    await promptAPIBulk();
+    const validResults = chrome_api_response.filter(
+      (item: { score: null }) => item && item.score != null
+    );
+
+    const totalScore = validResults.reduce(
+      (sum: any, item: { score: any }) => sum + item.score,
+      0
+    );
+    // Average score (optional)
+    const totalQuestions = validResults.length;
+    const totalMarks = totalQuestions * 10;
+    const message = getRandomScoreMessageFromTotal(totalScore, totalMarks);
+    setTotal({
+      message,
+      totalMarks,
+      totalScore,
+      totalQuestions,
+    });
+    setShowScore(true);
   };
 
   return (
@@ -332,18 +244,6 @@ Return only plain text — no Markdown formatting.`,
                 <h2 className="font-semibold text-lg text-gray-800">
                   {currentIndex + 1}. {questions[currentIndex].Q}
                 </h2>
-
-                {result[currentIndex] ? (
-                  <div className="mt-4 break-words whitespace-pre-wrap text-gray-600 leading-relaxed">
-                    <div>
-                      <p className="font-bold text-black">Improved Version: </p>
-                      <p className="">{result[currentIndex].correctedInput}</p>
-                    </div>
-                  </div>
-                ) : (
-                  pressedAnalyze[currentIndex] &&
-                  subject == "English" && <TypingLoader />
-                )}
 
                 {promptResult[currentIndex] ? (
                   <div className="mt-2 break-words whitespace-pre-wrap text-gray-600 leading-relaxed">
@@ -371,12 +271,12 @@ Return only plain text — no Markdown formatting.`,
                     )}
                   </div>
                 ) : (
-                  pressedAnalyze[currentIndex] && <TypingLoader />
+                  pressedAnalyze[0] && <TypingLoader />
                 )}
 
                 <textarea
                   value={answers[currentIndex] || ""}
-                  disabled={pressedAnalyze[currentIndex]}
+                  disabled={pressedAnalyze?.[0]}
                   onChange={handleAnswerChange}
                   placeholder="Enter your answer..."
                   className="relative block w-full mt-4 rounded-md bg-white px-3 py-2 text-base text-gray-900 
@@ -400,49 +300,25 @@ Return only plain text — no Markdown formatting.`,
                   ⬅️
                 </button>
 
-                <button
-                  onClick={async () => await ChromeAPI()}
-                  disabled={pressedAnalyze[currentIndex]}
-                  className={`px-4 py-2 bg-blue-600 text-white rounded absolute right-7 bottom-0 
-                         ${pressedAnalyze[currentIndex] && "bg-gray-400"}
-                     `}
-                >
-                  Analyze
-                </button>
-
                 {currentIndex === questions.length - 1 ? (
                   <button
                     onClick={handleSubmit}
                     className={`absolute -right-20 top-40  px-4 py-2 rounded-md  text-white 
                        ${
-                         pressedAnalyze[currentIndex] &&
-                         !promptResult[currentIndex]
+                         !!pressedAnalyze[0]
                            ? "bg-gray-400"
                            : "bg-indigo-600 hover:bg-indigo-700"
                        } `}
                     title="Finish Test"
-                    disabled={
-                      pressedAnalyze[currentIndex] &&
-                      !promptResult[currentIndex]
-                    }
+                    disabled={!!pressedAnalyze[0]}
                   >
                     🏁
                   </button>
                 ) : (
                   <button
                     onClick={handleNext}
-                    className={`absolute -right-20 top-40  px-4 py-2 rounded-md  text-white 
-                       ${
-                         pressedAnalyze[currentIndex] &&
-                         !promptResult[currentIndex]
-                           ? "bg-gray-400"
-                           : "bg-indigo-600 hover:bg-indigo-700"
-                       } `}
+                    className={`absolute -right-20 top-40  px-4 py-2 rounded-md  text-white bg-indigo-600 hover:bg-indigo-700`}
                     title="Next Question"
-                    disabled={
-                      pressedAnalyze[currentIndex] &&
-                      !promptResult[currentIndex]
-                    }
                   >
                     ➡️
                   </button>

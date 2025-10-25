@@ -9,4 +9,9 @@ export type TeacherMode =
   | "test_details"
   | "question_details";
 
-export type StudentMode = "" | "offline" | "online" | "leaderboard";
+export type StudentMode =
+  | ""
+  | "offline_oneByone"
+  | "offline_complete_test"
+  | "online"
+  | "leaderboard";
