@@ -8,7 +8,7 @@ import {
 
 import { initProofreader } from "@/utils/proofreaderClient";
 import { destroyPromptAPI, initPromptAPI } from "@/utils/promptClient";
-import TypingLoader from "../TypingLoader";
+import TypingLoader from "../Loader/TypingLoader";
 interface OfflineProps {
   testState: any;
   chromeAPI: any;
