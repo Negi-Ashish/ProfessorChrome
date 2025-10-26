@@ -88,6 +88,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
               // Code to create the test subject in Tests collection.
 
               const test_details = {
+                teacher_code: teacher.code,
                 test_name: testName,
                 subjects: [
                   {
@@ -103,7 +104,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
               if (!testSnap.exists) {
                 // Create new test if it doesn't exist
                 await testRef.set({ test_details });
-                console.log("HERE4");
+                console.log("test_details", test_details);
               } else {
                 // Test exists — update subjects only if not already present
                 const existing = testSnap.data();
@@ -185,6 +186,31 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
           if (existingTest?.subjects[subject]) {
             if (mode == "delete_subject") {
               delete existingTest.subjects[subject];
+
+              // Code to delete from Tests Collection
+              const testRef = db.collection("Tests").doc(testCode);
+              const testSnap = await testRef.get();
+
+              if (testSnap.exists) {
+                const data = testSnap.data();
+
+                const updatedSubjects = (
+                  data?.test_details?.subjects || []
+                ).filter((sub: { subject_name: string }) => {
+                  return sub.subject_name !== subject;
+                });
+
+                if (updatedSubjects.length === 0) {
+                  // No subjects left: delete entire test record
+
+                  await testRef.delete();
+                } else {
+                  // Update with remaining subjects
+                  await testRef.update({
+                    "test_details.subjects": updatedSubjects,
+                  });
+                }
+              }
             } else if (mode == "delete_question") {
               const questionData = teacher.questions[0];
 
@@ -247,6 +273,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 
         // If subject provided → delete subject only
         if (subject) {
+          console.log("Delete SUBJECT CASE");
           const test = tests[testIndex];
           if (!test.subjects[subject]) {
             return res
