@@ -480,7 +480,10 @@ export function getRandomScoreMessageFromTotal(
   score: number,
   totalMarks: number
 ) {
-  if (totalMarks <= 0) return "Invalid total marks.";
+  if (score == 0)
+    return "You have not provided any answers yet. Please attempt the questions to receive a score.";
+  if (totalMarks <= 0)
+    return "Your score is 0. Review the material and try again to improve your performance.";
 
   // Step 1: Convert to 0-10 scale
   const normalized = (score / totalMarks) * 10;
