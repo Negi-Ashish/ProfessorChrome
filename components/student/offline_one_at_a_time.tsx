@@ -80,10 +80,15 @@ export function OfflineTestOneByOne({ testState, chromeAPI }: OfflineProps) {
     newResult[currentIndex] = true;
     setPressedAnalyze(newResult);
 
-    if (subject == "English") {
-      await handleProofread();
+    const tasks = [];
+
+    if (subject === "English") {
+      tasks.push(handleProofread());
     }
-    await promptAPI();
+
+    tasks.push(promptAPI());
+
+    await Promise.all(tasks);
   }
 
   async function promptAPI() {
@@ -383,7 +388,7 @@ export function OfflineTestOneByOne({ testState, chromeAPI }: OfflineProps) {
                       {total.totalScore} / {total.totalMarks}
                     </h2>
                     <p>Total Questions answered: {total.totalQuestions}</p>
-                    <h2 className="text-2xl font-bold mb-4">{total.message}</h2>
+                    <h2 className="text-xl font-bold mb-4">{total.message}</h2>
 
                     <button
                       onClick={() => setShowScore(false)}
