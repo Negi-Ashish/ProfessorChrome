@@ -13,5 +13,6 @@ export type StudentMode =
   | ""
   | "offline_oneByone"
   | "offline_complete_test"
-  | "online"
+  | "online_oneByone"
+  | "online_complete_test"
   | "leaderboard";

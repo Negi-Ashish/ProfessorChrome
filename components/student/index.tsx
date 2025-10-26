@@ -99,12 +99,19 @@ export function StudentComponent({ setRole }: StudentProp) {
             <OfflineCompleteTest testState={testState} chromeAPI={chromeAPI} />
           </div>
         );
-      case "online":
+      case "online_oneByone":
         return (
           <div>
             <BackButton handleBack={() => setStudentMode("")} />
           </div>
         );
+      case "online_complete_test":
+        return (
+          <div>
+            <BackButton handleBack={() => setStudentMode("")} />
+          </div>
+        );
+
       case "leaderboard":
         return (
           <div>
@@ -187,10 +194,24 @@ export function StudentComponent({ setRole }: StudentProp) {
               <button
                 className="flex-shrink-0"
                 disabled={!isOnline}
-                onClick={() => setStudentMode("online")}
+                onClick={() => setStudentMode("online_oneByone")}
               >
                 <Card
-                  title="Online Tests"
+                  title="One by one (Online)"
+                  styling={
+                    isOnline
+                      ? `hover:bg-green-300 cursor-pointer`
+                      : `hover:bg-red-300 opacity-50 cursor-not-allowed`
+                  }
+                />
+              </button>
+              <button
+                className="flex-shrink-0"
+                disabled={!isOnline}
+                onClick={() => setStudentMode("online_complete_test")}
+              >
+                <Card
+                  title="Complete Test (Online)"
                   styling={
                     isOnline
                       ? `hover:bg-green-300 cursor-pointer`
