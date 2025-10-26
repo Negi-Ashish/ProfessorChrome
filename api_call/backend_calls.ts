@@ -61,3 +61,15 @@ export const deleteTest = async (
   const data: TeacherResponse = await res.json();
   return data;
 };
+
+export const getTest = async (id: string): Promise<TeacherResponse> => {
+  const res = await fetch(`/api/students?id=${id}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const data: any = await res.json();
+  return data;
+};
