@@ -1,14 +1,13 @@
 import React, { Dispatch, SetStateAction, useRef, useState } from "react";
-import { getTeacher } from "@/api_call/backend_calls";
-import { TeacherDocument } from "@/structures/interfaceFile";
+import { getTest } from "@/api_call/backend_calls";
+import { Test } from "@/structures/interfaceFile";
 
 interface CodeInputProps {
-  setTestData: Dispatch<SetStateAction<TeacherDocument | null>>;
+  setTestData: Dispatch<SetStateAction<Test | null>>;
 }
 
 export function TestCodeInput({ setTestData }: CodeInputProps) {
   const [isComplete, setIsComplete] = useState(false);
-
   const inputsRef = useRef<(HTMLInputElement | null)[]>([]);
 
   const handleChange = (
@@ -33,7 +32,7 @@ export function TestCodeInput({ setTestData }: CodeInputProps) {
     }
   };
 
-  const handleSubmit = async () => {
+  const handleTestCodeSubmit = async () => {
     const values = inputsRef.current.map((input) => input?.value || "");
     const code = values.join(""); // e.g. "12345"
     console.log("Entered Code:", code);
@@ -42,7 +41,7 @@ export function TestCodeInput({ setTestData }: CodeInputProps) {
 
   const fetchTests = async (code: string) => {
     try {
-      const testData = await getTeacher(code);
+      const testData = await getTest(code);
       if (!testData.isSuccessful) {
         throw new Error(testData.message);
       }
@@ -73,7 +72,7 @@ export function TestCodeInput({ setTestData }: CodeInputProps) {
       </div>
 
       <button
-        onClick={async () => await handleSubmit()}
+        onClick={async () => await handleTestCodeSubmit()}
         disabled={!isComplete} // ✅ disable when not complete
         className={`mt-4 px-4 py-2 rounded text-white transition ${
           isComplete

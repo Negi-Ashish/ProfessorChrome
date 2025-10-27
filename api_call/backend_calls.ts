@@ -3,6 +3,7 @@ import {
   TeacherResponse,
   DeleteTeacherPayload,
   TeacherPayload,
+  TestResponse,
 } from "@/structures/interfaceFile";
 
 export const getTeacher = async (id: string): Promise<TeacherResponse> => {
@@ -62,7 +63,7 @@ export const deleteTest = async (
   return data;
 };
 
-export const getTest = async (id: string): Promise<TeacherResponse> => {
+export const getTest = async (id: string): Promise<TestResponse> => {
   const res = await fetch(`/api/students?id=${id}`, {
     method: "GET",
     headers: {

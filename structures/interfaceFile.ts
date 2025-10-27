@@ -41,6 +41,12 @@ export interface TeacherResponse {
   data: TeacherDocument;
 }
 
+export interface TestResponse {
+  isSuccessful: boolean;
+  message: string;
+  data: Test;
+}
+
 export interface DeleteTeacherPayload {
   teacher: {
     code: string;

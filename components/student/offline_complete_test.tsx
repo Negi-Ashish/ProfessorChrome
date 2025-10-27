@@ -75,7 +75,6 @@ export function OfflineCompleteTest({ testState, chromeAPI }: OfflineProps) {
   async function promptAPIBulk() {
     let teacher, prompt_result, prompt_result_array;
     if (!promptSession) {
-      console.log("Creating new inside function");
       teacher = await initPromptAPI(subject == "English");
     } else {
       teacher = promptSession;
@@ -190,7 +189,6 @@ Return only plain text — no Markdown formatting.`,
         ans.trim().length > 0
     );
   };
-  console.log(total);
 
   const handleSubmit = async () => {
     if (!areAllAnswersValid()) {

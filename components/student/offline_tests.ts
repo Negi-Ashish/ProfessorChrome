@@ -1,8 +1,7 @@
 import { Question } from "@/structures/interfaceFile";
 
 export type Test = {
-  English?: Question[];
-  Geography?: Question[];
+  [subjectName: string]: Question[];
 };
 
 export const Test_One = {
@@ -321,13 +320,7 @@ export const Test_Seven = {
 };
 
 export type TestsType = {
-  "English I": Test;
-  "English II": Test;
-  "English III": Test;
-  "English IV": Test;
-  "English V": Test;
-  "English VI": Test;
-  "Geography I": Test;
+  [subjectName: string]: Test;
 };
 
 export const Tests: TestsType = {

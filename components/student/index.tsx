@@ -7,7 +7,7 @@ import { OfflineTestOneByOne } from "./offline_one_at_a_time";
 import { destroyProofreader, initProofreader } from "@/utils/proofreaderClient";
 import { TestsType } from "./offline_tests";
 import { OfflineCompleteTest } from "./offline_complete_test";
-import { OnlineSingleTestComponent } from "./online_single_test";
+import { OnlineCompleteTestComponent } from "./online_complete_test";
 interface StudentProp {
   setRole: Dispatch<SetStateAction<string>>;
 }
@@ -102,15 +102,20 @@ export function StudentComponent({ setRole }: StudentProp) {
       case "online_oneByone":
         return (
           <div>
-            <OnlineSingleTestComponent handleBack={() => handleBack()} />
+            <BackButton handleBack={() => setStudentMode("")} />
           </div>
         );
       case "online_complete_test":
         return (
           <div>
-            <BackButton handleBack={() => setStudentMode("")} />
+            <OnlineCompleteTestComponent
+              handleBack={() => handleBack()}
+              testState={testState}
+              chromeAPI={chromeAPI}
+            />
           </div>
         );
+
       case "leaderboard":
         return (
           <div>
