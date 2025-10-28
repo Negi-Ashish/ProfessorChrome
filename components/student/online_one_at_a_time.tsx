@@ -246,10 +246,13 @@ export function OnlineTestOneByOne({
             <div className="mt-10  min-w-5xl ">
               {selectedTest == "" ? (
                 <div className="flex flex-col text-center items-center">
+                  <h1 className={`mb-2 text-2xl font-bold`}>
+                    {testData?.test_name}
+                  </h1>
                   {Object.entries(Tests).map(([testName]) => (
                     <div
                       key={testName}
-                      className="p-4 bg-yellow-300 mb-2 min-w-xl rounded-2xl hover:bg-green-400 cursor-pointer"
+                      className="p-4 mb-2 min-w-xl rounded-2xl cursor-pointer bg-[#18c99d] border border-green-500 hover:bg-blue-300 hover:border-blue-900"
                       onClick={() =>
                         setSelectedTest(testName as keyof TestsType)
                       }

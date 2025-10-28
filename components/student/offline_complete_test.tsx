@@ -224,14 +224,14 @@ Return only plain text — no Markdown formatting.`,
 
   return (
     <div className="max-w-6xl mx-auto min-h-fit">
-      <div className="flex flex-wrap gap-4 max-h-[80vh]  p-4 justify-center">
+      <div className="flex flex-wrap gap-4 max-h-[80vh]  p-4 justify-center text-black">
         <div className="mt-10  min-w-5xl ">
           {selectedTest == "" ? (
             <div className="flex flex-col text-center items-center">
               {Object.entries(Tests).map(([testName]) => (
                 <div
                   key={testName}
-                  className="p-4 bg-yellow-300 mb-2 min-w-xl rounded-2xl hover:bg-green-400 cursor-pointer"
+                  className="p-4 bg-[#18c99d] border border-green-500 hover:bg-blue-300 hover:border-blue-900 mb-2 min-w-xl rounded-2xl  cursor-pointer"
                   onClick={() => setSelectedTest(testName as keyof TestsType)}
                 >
                   <h2 className="text-xl font-semibold ">{testName}</h2>

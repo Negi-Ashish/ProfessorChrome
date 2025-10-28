@@ -246,18 +246,18 @@ export function OnlineCompleteTestComponent({
             <div className="mt-10  min-w-5xl ">
               {selectedTest == "" ? (
                 <div className="flex flex-col text-center items-center">
-                  <h1 className="mb-2 text-2xl font-bold">
+                  <h1 className={`mb-2 text-2xl font-bold`}>
                     {testData?.test_name}
                   </h1>
                   {Object.entries(Tests).map(([testName]) => (
                     <div
                       key={testName}
-                      className="p-4 bg-yellow-300 mb-2 min-w-xl rounded-2xl hover:bg-green-400 cursor-pointer"
+                      className="p-4 bg-[#18c99d] border border-green-500 hover:bg-blue-300 hover:border-blue-900 mb-2 min-w-xl rounded-2xl text-black cursor-pointer"
                       onClick={() =>
                         setSelectedTest(testName as keyof TestsType)
                       }
                     >
-                      <h2 className="text-xl font-semibold ">{testName}</h2>
+                      <h2 className={`text-xl font-semibold `}>{testName}</h2>
                     </div>
                   ))}
                 </div>
