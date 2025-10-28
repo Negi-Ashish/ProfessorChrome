@@ -37,7 +37,7 @@ export default function SpinnerLoader() {
   return (
     <div className="flex flex-col items-center justify-center py-8">
       {/* Spinner */}
-      <div className="w-10 h-10 border-4 border-gray-300 border-t-indigo-600 rounded-full animate-spin"></div>
+      <div className="w-10 h-10 border-4 border-gray-300 border-t-green-600 rounded-full animate-spin"></div>
 
       {/* Dynamic Rotating Message */}
       <p className="mt-4 text-gray-800 font-medium animate-pulse text-center px-4">

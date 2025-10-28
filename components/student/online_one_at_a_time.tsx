@@ -274,7 +274,7 @@ export function OnlineTestOneByOne({
                         {result[currentIndex].correctedInput !==
                           answers[currentIndex] && (
                           <div>
-                            <p className="font-bold text-black">
+                            <p className="font-bold text-gray-300">
                               Improved Version:{" "}
                             </p>
                             <p className="">
@@ -292,11 +292,11 @@ export function OnlineTestOneByOne({
                       <div className="mt-2 break-words whitespace-pre-wrap leading-relaxed">
                         {promptResult[currentIndex].feedback && (
                           <div>
-                            <p className="font-bold text-black">Score:</p>
+                            <p className="font-bold text-gray-300">Score:</p>
                             <p className="">
                               {promptResult[currentIndex].score}
                             </p>
-                            <p className="font-bold text-black">
+                            <p className="font-bold text-gray-300">
                               Needs Improvement:
                             </p>
                             <p className="">
@@ -304,11 +304,11 @@ export function OnlineTestOneByOne({
                                 ? "No"
                                 : "Yes"}
                             </p>
-                            <p className="font-bold text-black">Feedback:</p>
+                            <p className="font-bold text-gray-300">Feedback:</p>
                             <p className="">
                               {promptResult[currentIndex].feedback}
                             </p>
-                            <p className="font-bold text-black">
+                            <p className="font-bold text-gray-300">
                               Rephrased Version:
                             </p>
                             <p className="">
@@ -404,7 +404,7 @@ export function OnlineTestOneByOne({
 
                   {/* Modal */}
                   {showScore && total && (
-                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="fixed inset-0 bg-[#0d0f1a] bg-opacity-50 flex items-center justify-center z-50">
                       <div className="bg-white p-6 rounded shadow-lg max-w-sm w-full text-center relative text-black">
                         <h2 className="text-2xl font-bold">
                           {total.totalScore} / {total.totalMarks}
