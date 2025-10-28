@@ -8,7 +8,7 @@ export default function Home() {
   useEffect(() => {}, []);
 
   return (
-    <div className="flex items-center justify-center h-screen w-screen bg-sky-100">
+    <div className="flex items-center justify-center h-screen w-screen bg-[#0d0f1a] text-white">
       <ToggleComponent role={role} setRole={setRole} />
     </div>
   );

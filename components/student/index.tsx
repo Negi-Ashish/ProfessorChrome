@@ -9,6 +9,8 @@ import { TestsType } from "./offline_tests";
 import { OfflineCompleteTest } from "./offline_complete_test";
 import { OnlineCompleteTestComponent } from "./online_complete_test";
 import { OnlineTestOneByOne } from "./online_one_at_a_time";
+import { BookLock, BookKey, NotebookPen, BookOpenCheck } from "lucide-react";
+
 interface StudentProp {
   setRole: Dispatch<SetStateAction<string>>;
 }
@@ -172,7 +174,7 @@ export function StudentComponent({ setRole }: StudentProp) {
   return (
     <div className=" flex items-center">
       {studentMode == "" && (
-        <div className="relative bg-amber-400">
+        <div className="relative ">
           <BackButton styling="-top-2 right-2" handleBack={() => setRole("")} />
         </div>
       )}
@@ -187,7 +189,8 @@ export function StudentComponent({ setRole }: StudentProp) {
               >
                 <Card
                   title="One by one (Offline)"
-                  styling="hover:bg-green-300 cursor-pointer"
+                  styling="hover:bg-blue-300 cursor-pointer hover:border-blue-900"
+                  icon={<BookOpenCheck size={50} />}
                 />
               </button>
               <button
@@ -196,7 +199,8 @@ export function StudentComponent({ setRole }: StudentProp) {
               >
                 <Card
                   title="Complete Test (Offline)"
-                  styling="hover:bg-green-300 cursor-pointer"
+                  styling="hover:bg-blue-300 cursor-pointer hover:border-blue-900"
+                  icon={<NotebookPen size={50} />}
                 />
               </button>
               {/* Online Tests */}
@@ -209,9 +213,10 @@ export function StudentComponent({ setRole }: StudentProp) {
                   title="One by one (Online)"
                   styling={
                     isOnline
-                      ? `hover:bg-green-300 cursor-pointer`
-                      : `hover:bg-red-300 opacity-50 cursor-not-allowed`
+                      ? `hover:bg-blue-300 cursor-pointer hover:border-blue-900`
+                      : `hover:bg-red-300 opacity-50 cursor-not-allowed hover:border-red-900`
                   }
+                  icon={<BookKey size={50} />}
                 />
               </button>
               <button
@@ -223,13 +228,14 @@ export function StudentComponent({ setRole }: StudentProp) {
                   title="Complete Test (Online)"
                   styling={
                     isOnline
-                      ? `hover:bg-green-300 cursor-pointer`
-                      : `hover:bg-red-300 opacity-50 cursor-not-allowed`
+                      ? `hover:bg-blue-300 cursor-pointer hover:border-blue-900`
+                      : `hover:bg-red-300 opacity-50 cursor-not-allowed hover:border-red-900`
                   }
+                  icon={<BookLock size={50} />}
                 />
               </button>
               {/* Check Leaderboard */}
-              <button
+              {/* <button
                 className="flex-shrink-0"
                 disabled={!isOnline}
                 onClick={() => setStudentMode("leaderboard")}
@@ -238,11 +244,11 @@ export function StudentComponent({ setRole }: StudentProp) {
                   title="Leaderboard"
                   styling={
                     isOnline
-                      ? `hover:bg-green-300 cursor-pointer`
-                      : `hover:bg-red-300 opacity-50 cursor-not-allowed`
+                      ? `hover:bg-blue-300 cursor-pointer hover:border-blue-900`
+                      : `hover:bg-red-300 opacity-50 cursor-not-allowed hover:border-red-900`
                   }
                 />
-              </button>
+              </button> */}
             </div>
           </div>
         </div>
