@@ -262,15 +262,15 @@ export function QuestionDetails({
   };
 
   return (
-    <div className="max-w-6xl mx-auto min-h-fit">
+    <div className="max-w-6xl mx-auto min-h-fit text-gray-400">
       <div className="flex flex-wrap gap-4 max-h-[80vh]  p-4 justify-center">
-        <form>
+        <form className="min-w-5xl">
           <div className="space-y-12">
             <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
               <div className="col-span-full">
                 <label
                   htmlFor="cover-photo"
-                  className="block text-2xl font-bold text-gray-900"
+                  className="block text-2xl font-bold "
                 >
                   {selectedTest?.test_name} (Code: {selectedTest?.test_code})
                 </label>
@@ -314,14 +314,14 @@ export function QuestionDetails({
                               >
                                 <ul className="relative flex-1 space-y-6 sm:last:pb-6 sm:space-y-8 pr-10">
                                   <li>
-                                    <summary className="flex items-center justify-between font-semibold text-gray-700">
+                                    <summary className="flex items-center justify-between font-semibold text-gray-400">
                                       {item.Q}
                                     </summary>
                                     <p
                                       dangerouslySetInnerHTML={{
                                         __html: item.A,
                                       }}
-                                      className="mt-3 text-gray-600 leading-relaxed"
+                                      className="mt-3 text-gray-500 leading-relaxed"
                                     ></p>
                                   </li>
                                   <DeleteButton
@@ -363,10 +363,13 @@ export function QuestionDetails({
                         aria-hidden="true"
                         className="mx-auto size-12 text-gray-300"
                       />
-                      <div className="mt-4 flex text-sm/6 text-gray-600">
+                      <div className="mt-4 flex text-sm/6 text-gray-500 ">
                         <label
                           htmlFor="file-upload"
-                          className="relative cursor-pointer rounded-md bg-transparent font-semibold text-indigo-600 focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-indigo-600 hover:text-indigo-500"
+                          className="relative cursor-pointer rounded-md bg-transparent 
+                          font-semibold text-indigo-600 focus-within:outline-2 
+                          focus-within:outline-offset-2 focus-within:outline-indigo-600
+                           hover:text-indigo-500 "
                         >
                           <span>Upload a file</span>
                           <input
@@ -378,9 +381,8 @@ export function QuestionDetails({
                             onChange={handleFileChange}
                           />
                         </label>
-                        <p className="pl-1">or drag and drop</p>
                       </div>
-                      <p className="text-xs/5 text-gray-600">
+                      <p className="text-xs/5 text-gray-500">
                         PNG, JPG, GIF up to 10MB
                       </p>
                     </div>
@@ -391,9 +393,7 @@ export function QuestionDetails({
           </div>
 
           <div className="border-b border-gray-900/10 pb-5">
-            <h2 className="text-xl font-semibold text-gray-900 mt-5">
-              {subjectName}
-            </h2>
+            <h2 className="text-xl font-semibold  mt-5">{subjectName}</h2>
           </div>
 
           <div className="mt-10 divide-y">
@@ -402,12 +402,12 @@ export function QuestionDetails({
                 <div key={idx} className="py-5 gap-x-12 first:pt-0 sm:flex">
                   <ul className="relative flex-1 space-y-6 sm:last:pb-6 sm:space-y-8 pr-10">
                     <li>
-                      <summary className="flex items-center justify-between font-semibold text-gray-700">
+                      <summary className="flex items-center justify-between font-semibold text-gray-400">
                         {idx + 1}. {item.Q}
                       </summary>
                       <p
                         dangerouslySetInnerHTML={{ __html: item.A }}
-                        className="mt-3 text-gray-600 leading-relaxed"
+                        className="mt-3 text-gray-500 leading-relaxed"
                       ></p>
                     </li>
                     <DeleteButton
@@ -420,7 +420,7 @@ export function QuestionDetails({
                 </div>
               ))
             ) : (
-              <h2 className="font-semibold text-gray-900">
+              <h2 className="font-semibold ">
                 No questions have been added yet.
               </h2>
             )}
@@ -430,7 +430,7 @@ export function QuestionDetails({
             <div className="col-span-full">
               <label
                 htmlFor="question"
-                className="block text-sm/6 font-medium text-gray-900 mt-4"
+                className="block text-sm/6 font-medium  mt-4"
               >
                 Add a new question
               </label>
@@ -442,7 +442,8 @@ export function QuestionDetails({
                   value={newQuestion}
                   onChange={(e) => setNewQuestion(e.target.value)}
                   autoComplete="question"
-                  className="block w-full  rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                  className="block w-full  rounded-md bg-white px-3 py-1.5 text-base text-black
+                  outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                 />
                 {errors.question && (
                   <p className="text-red-500 text-sm mt-1">{errors.question}</p>
@@ -451,7 +452,7 @@ export function QuestionDetails({
 
               <label
                 htmlFor="answer"
-                className="block text-sm/6 font-medium text-gray-900 mt-4"
+                className="block text-sm/6 font-medium  mt-4"
               >
                 Add an answer
               </label>
@@ -463,7 +464,8 @@ export function QuestionDetails({
                   value={newAnswer}
                   onChange={(e) => setNewAnswer(e.target.value)}
                   autoComplete="answer"
-                  className="block w-full  rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                  className="block w-full  rounded-md bg-white px-3 py-1.5 text-base text-black
+                   outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                 />
                 {errors.answer && (
                   <p className="text-red-500 text-sm mt-1">{errors.answer}</p>
@@ -473,7 +475,7 @@ export function QuestionDetails({
               <div className="mt-6 flex items-center justify-end gap-x-6">
                 <button
                   type="button"
-                  className="pt-2 text-sm/6 font-semibold text-gray-900"
+                  className="pt-2 text-sm/6 font-semibold "
                   onClick={() => {
                     setNewQuestionMode(false);
                     setNewQuestion("");
@@ -495,7 +497,7 @@ export function QuestionDetails({
             <div className="mt-6 flex items-center justify-end gap-x-6">
               <button
                 type="button"
-                className="text-sm/6 font-semibold text-gray-900"
+                className="text-sm/6 font-semibold "
                 onClick={() => {
                   setSelectedSubject(null);
                   setTeacherMode("test_details");

@@ -109,7 +109,7 @@ export function TestDetails({
   };
 
   return (
-    <div className="max-w-6xl mx-auto min-h-fit">
+    <div className="max-w-6xl mx-auto min-h-fit text-gray-400">
       <div className="flex flex-wrap gap-4 max-h-[80vh]  p-4 justify-center">
         <form>
           <div className="space-y-12">
@@ -117,7 +117,7 @@ export function TestDetails({
               <div className="col-span-full">
                 <label
                   htmlFor="cover-photo"
-                  className="block text-2xl font-bold text-gray-900"
+                  className="block text-2xl font-bold "
                 >
                   {selectedTest?.test_name} (Code: {selectedTest?.test_code})
                 </label>
@@ -129,9 +129,7 @@ export function TestDetails({
           <div className="border-b border-gray-900/10 pb-5">
             {selectedTest && selectedTest.subjects ? (
               <div>
-                <h1 className="text-xl font-semibold text-gray-900 mt-5 mb-2">
-                  Subjects
-                </h1>
+                <h1 className="text-xl font-semibold  mt-5 mb-2">Subjects</h1>
                 {Object.keys(selectedTest.subjects).map((subjectName) => (
                   <div className="relative" key={subjectName}>
                     <ActionCard
@@ -153,7 +151,7 @@ export function TestDetails({
                 ))}
               </div>
             ) : (
-              <h1 className="text-xl font-semibold text-gray-900 mt-5 mb-2">
+              <h1 className="text-xl font-semibold  mt-5 mb-2">
                 No subjects have been added to this test yet — please create
                 one.
               </h1>
@@ -166,7 +164,7 @@ export function TestDetails({
                 <div className="col-span-full">
                   <label
                     htmlFor="test-code"
-                    className="block text-sm/6 font-medium text-gray-900 -mt-4"
+                    className="block text-sm/6 font-medium  -mt-4"
                   >
                     Enter new subject name
                   </label>
@@ -178,7 +176,8 @@ export function TestDetails({
                       value={newSubjectName}
                       onChange={(e) => setNewSubjectName(e.target.value)}
                       autoComplete="test-code"
-                      className="block w-full  rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                      className="block w-full rounded-md bg-white px-3 py-1.5 text-base  outline-1 -outline-offset-1 outline-gray-300
+                       placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6 text-black"
                     />
                     {errors.name && (
                       <p className="text-red-500 text-sm mt-1">{errors.name}</p>
@@ -188,7 +187,7 @@ export function TestDetails({
                   <div className="mt-6 flex items-center justify-end gap-x-6">
                     <button
                       type="button"
-                      className="pt-2 text-sm/6 font-semibold text-gray-900"
+                      className="pt-2 text-sm/6 font-semibold "
                       onClick={() => {
                         setNewSubjectMode(false);
                         setNewSubjectName("");
@@ -211,7 +210,7 @@ export function TestDetails({
             <div className="mt-6 flex items-center justify-end gap-x-6">
               <button
                 type="button"
-                className="text-sm/6 font-semibold text-gray-900"
+                className="text-sm/6 font-semibold "
                 onClick={() => {
                   setSelectedTest(null);
                   setTeacherMode("view");

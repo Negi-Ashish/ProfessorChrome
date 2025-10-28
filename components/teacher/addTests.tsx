@@ -69,14 +69,14 @@ export function AddTests({
   };
 
   return (
-    <div className="max-w-6xl mx-auto min-h-fit ">
+    <div className="max-w-6xl mx-auto min-h-fit text-gray-400">
       <div className="flex justify-center">
         <form className="">
           <div className="border-b border-gray-900/10 p-10">
             <div className="col-span-full">
               <label
                 htmlFor="test-code"
-                className="block text-sm/6 font-medium text-gray-900 -mt-4"
+                className="block text-sm/6 font-medium  -mt-4"
               >
                 Test Code
               </label>
@@ -88,7 +88,7 @@ export function AddTests({
                   value={testCode}
                   onChange={(e) => setTestCode(e.target.value)}
                   autoComplete="test-code"
-                  className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                  className="block w-full rounded-md bg-white px-3 py-1.5 text-base  outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                 />
                 {errors.code && (
                   <p className="text-red-500 text-sm mt-1">{errors.code}</p>
@@ -98,7 +98,7 @@ export function AddTests({
             <div className="col-span-full">
               <label
                 htmlFor="test-name"
-                className="block text-sm/6 font-medium text-gray-900 mt-4"
+                className="block text-sm/6 font-medium  mt-4"
               >
                 Test Name
               </label>
@@ -111,7 +111,7 @@ export function AddTests({
                   onChange={(e) => setTestName(e.target.value)}
                   autoComplete="test-name"
                   className="block w-full rounded-md bg-white px-3 py-1.5 text-base 
-              text-gray-900 outline-1 -outline-offset-1 outline-gray-300 
+               outline-1 -outline-offset-1 outline-gray-300 
               placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 
               focus:outline-indigo-600 sm:text-sm/6"
                 />
@@ -125,7 +125,7 @@ export function AddTests({
           <div className="mt-6 flex items-center justify-end gap-x-6">
             <button
               type="button"
-              className="text-sm/6 font-semibold text-gray-900"
+              className="text-sm/6 font-semibold "
               onClick={() => {
                 setTeacherMode("view");
               }}

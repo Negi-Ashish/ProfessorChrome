@@ -75,7 +75,7 @@ export function TeacherComponent({ setRole }: TeacherProp) {
   };
 
   return (
-    <div className="relative flex flex-col items-center overflow-auto overflow-x-hidden custom-scrollbar">
+    <div className="relative flex flex-col items-center overflow-auto overflow-x-hidden custom-scrollbar ">
       {!teacherData && (
         <div>
           <BackButton styling="top-6 left-3" handleBack={() => setRole("")} />
