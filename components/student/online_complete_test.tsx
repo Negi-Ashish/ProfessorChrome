@@ -10,6 +10,7 @@ import { destroyPromptAPI, initPromptAPI } from "@/utils/promptClient";
 import TypingLoader from "../Loader/TypingLoader";
 import SpinnerLoader from "../Loader/SpinnerLoader";
 import { getRandomScoreMessageFromTotal, TestsType } from "./offline_tests";
+import { BookOpenCheck, StepBack, StepForward } from "lucide-react";
 
 interface TeacherProp {
   handleBack: () => any;
@@ -240,7 +241,7 @@ export function OnlineCompleteTestComponent({
   return (
     <div className="relative flex flex-col items-center overflow-auto overflow-x-hidden custom-scrollbar">
       {testData ? (
-        <div className="max-w-6xl mx-auto min-h-fit">
+        <div className="max-w-6xl mx-auto min-h-fit ">
           <BackButton styling="top-6 left-3" handleBack={handleBack} />
           <div className="flex flex-wrap gap-4 max-h-[80vh]  p-4 justify-center">
             <div className="mt-10  min-w-5xl ">
@@ -262,14 +263,14 @@ export function OnlineCompleteTestComponent({
                   ))}
                 </div>
               ) : (
-                <div className="relative p-6 max-w-3xl mx-auto  ">
+                <div className="relative p-6 max-w-3xl mx-auto text-gray-400 ">
                   <div className="relative mb-6">
-                    <h2 className="font-semibold text-lg text-gray-800">
+                    <h2 className="font-semibold text-lg">
                       {currentIndex + 1}. {questions[currentIndex].Q}
                     </h2>
 
                     {promptResult[currentIndex] ? (
-                      <div className="mt-2 break-words whitespace-pre-wrap text-gray-600 leading-relaxed">
+                      <div className="mt-2 break-words whitespace-pre-wrap  leading-relaxed">
                         {promptResult[currentIndex].feedback && (
                           <div>
                             <p className="font-bold text-black">Score:</p>
@@ -317,44 +318,45 @@ export function OnlineCompleteTestComponent({
                     <button
                       onClick={handlePrev}
                       disabled={currentIndex === 0}
-                      className={`absolute -left-20 top-40 px-4 py-2 rounded-md text-white ${
+                      className={`absolute -left-20 top-40 px-4 py-2 rounded-md text-black ${
                         currentIndex === 0
                           ? "bg-gray-400"
-                          : "bg-indigo-600 hover:bg-indigo-700"
+                          : "bg-[#18c99d] border border-green-500 hover:bg-blue-300 hover:border-blue-900"
                       }`}
                       title="Previous Question"
                     >
-                      ⬅️
+                      <StepBack />
                     </button>
 
                     {currentIndex === questions.length - 1 ? (
                       <button
                         onClick={handleSubmit}
-                        className={`absolute -right-20 top-40  px-4 py-2 rounded-md  text-white 
+                        className={`absolute -right-20 top-40  px-4 py-2 rounded-md  text-black 
                        ${
                          !!pressedAnalyze[0]
                            ? "bg-gray-400"
-                           : "bg-indigo-600 hover:bg-indigo-700"
+                           : "bg-[#18c99d] border border-green-500 hover:bg-blue-300 hover:border-blue-900"
                        } `}
                         title="Finish Test"
                         disabled={!!pressedAnalyze[0]}
                       >
-                        🏁
+                        <BookOpenCheck />
                       </button>
                     ) : (
                       <button
                         onClick={handleNext}
-                        className={`absolute -right-20 top-40  px-4 py-2 rounded-md  text-white bg-indigo-600 hover:bg-indigo-700`}
+                        className={`absolute -right-20 top-40  px-4 py-2 rounded-md  text-black
+                           bg-[#18c99d] border border-green-500 hover:bg-blue-300 hover:border-blue-900`}
                         title="Next Question"
                       >
-                        ➡️
+                        <StepForward />
                       </button>
                     )}
                   </div>
 
                   {/* Modal */}
                   {showScore && (
-                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 text-black">
                       <div className="bg-white p-6 rounded shadow-lg max-w-sm w-full text-center relative">
                         {total ? (
                           <div>
@@ -379,26 +381,12 @@ export function OnlineCompleteTestComponent({
                             <SpinnerLoader />
                           </div>
                         )}
-                        {showCompleteTestMsg && (
-                          <div>
-                            <h2 className="text-2xl font-bold mb-4">
-                              All questions must be answered before submitting
-                              the test.
-                            </h2>
-                            <button
-                              onClick={() => setShowCompleteTestMsg(false)}
-                              className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-                            >
-                              Close
-                            </button>
-                          </div>
-                        )}
                       </div>
                     </div>
                   )}
 
                   {showCompleteTestMsg && (
-                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 text-black">
                       <div className="bg-white p-6 rounded shadow-lg max-w-sm w-full text-center relative">
                         <div>
                           <p className="text-xl font-bold mb-4">

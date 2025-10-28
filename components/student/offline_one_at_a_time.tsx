@@ -9,6 +9,8 @@ import {
 import { initProofreader } from "@/utils/proofreaderClient";
 import { destroyPromptAPI, initPromptAPI } from "@/utils/promptClient";
 import TypingLoader from "../Loader/TypingLoader";
+import { BookOpenCheck, StepBack, StepForward } from "lucide-react";
+
 interface OfflineProps {
   testState: any;
   chromeAPI: any;
@@ -245,20 +247,18 @@ export function OfflineTestOneByOne({ testState, chromeAPI }: OfflineProps) {
               ))}
             </div>
           ) : (
-            <div className="relative p-6 max-w-3xl mx-auto  ">
+            <div className="relative p-6 max-w-3xl mx-auto text-gray-400 ">
               <div className="relative mb-6">
-                <h2 className="font-semibold text-lg text-gray-800">
+                <h2 className="font-semibold text-lg ">
                   {currentIndex + 1}. {questions[currentIndex].Q}
                 </h2>
 
                 {result[currentIndex] ? (
-                  <div className="mt-4 break-words whitespace-pre-wrap text-gray-600 leading-relaxed">
+                  <div className="mt-4 break-words whitespace-pre-wrap leading-relaxed">
                     {result[currentIndex].correctedInput !==
                       answers[currentIndex] && (
                       <div>
-                        <p className="font-bold text-black">
-                          Improved Version:{" "}
-                        </p>
+                        <p className="font-bold ">Improved Version: </p>
                         <p className="">
                           {result[currentIndex].correctedInput}
                         </p>
@@ -271,7 +271,7 @@ export function OfflineTestOneByOne({ testState, chromeAPI }: OfflineProps) {
                 )}
 
                 {promptResult[currentIndex] ? (
-                  <div className="mt-2 break-words whitespace-pre-wrap text-gray-600 leading-relaxed">
+                  <div className="mt-2 break-words whitespace-pre-wrap leading-relaxed">
                     {promptResult[currentIndex].feedback && (
                       <div>
                         <p className="font-bold text-black">Score:</p>
@@ -319,22 +319,22 @@ export function OfflineTestOneByOne({ testState, chromeAPI }: OfflineProps) {
                     (pressedAnalyze[currentIndex] &&
                       !promptResult[currentIndex])
                   }
-                  className={`absolute -left-20 top-40 px-4 py-2 rounded-md text-white ${
+                  className={`absolute -left-20 top-40 px-4 py-2 rounded-md text-black ${
                     currentIndex === 0 ||
                     (pressedAnalyze[currentIndex] &&
                       !promptResult[currentIndex])
                       ? "bg-gray-400"
-                      : "bg-indigo-600 hover:bg-indigo-700"
+                      : "bg-[#18c99d] border border-green-500 hover:bg-blue-300 hover:border-blue-900"
                   }`}
                   title="Previous Question"
                 >
-                  ⬅️
+                  <StepBack />
                 </button>
 
                 <button
                   onClick={async () => await ChromeAPI()}
                   disabled={pressedAnalyze[currentIndex]}
-                  className={`px-4 py-2 bg-blue-600 text-white rounded absolute right-7 bottom-0 
+                  className={`px-4 py-2 bg-blue-600  rounded absolute right-7 bottom-0 text-white
                          ${pressedAnalyze[currentIndex] && "bg-gray-400"}
                      `}
                 >
@@ -344,12 +344,12 @@ export function OfflineTestOneByOne({ testState, chromeAPI }: OfflineProps) {
                 {currentIndex === questions.length - 1 ? (
                   <button
                     onClick={handleSubmit}
-                    className={`absolute -right-20 top-40  px-4 py-2 rounded-md  text-white 
+                    className={`absolute -right-20 top-40  px-4 py-2 rounded-md text-black
                        ${
                          pressedAnalyze[currentIndex] &&
                          !promptResult[currentIndex]
                            ? "bg-gray-400"
-                           : "bg-indigo-600 hover:bg-indigo-700"
+                           : "bg-[#18c99d] border border-green-500 hover:bg-blue-300 hover:border-blue-900"
                        } `}
                     title="Finish Test"
                     disabled={
@@ -357,17 +357,17 @@ export function OfflineTestOneByOne({ testState, chromeAPI }: OfflineProps) {
                       !promptResult[currentIndex]
                     }
                   >
-                    🏁
+                    <BookOpenCheck />
                   </button>
                 ) : (
                   <button
                     onClick={handleNext}
-                    className={`absolute -right-20 top-40  px-4 py-2 rounded-md  text-white 
+                    className={`absolute -right-20 top-40  px-4 py-2 rounded-md text-black
                        ${
                          pressedAnalyze[currentIndex] &&
                          !promptResult[currentIndex]
                            ? "bg-gray-400"
-                           : "bg-indigo-600 hover:bg-indigo-700"
+                           : "bg-[#18c99d] border border-green-500 hover:bg-blue-300 hover:border-blue-900"
                        } `}
                     title="Next Question"
                     disabled={
@@ -375,7 +375,7 @@ export function OfflineTestOneByOne({ testState, chromeAPI }: OfflineProps) {
                       !promptResult[currentIndex]
                     }
                   >
-                    ➡️
+                    <StepForward />
                   </button>
                 )}
               </div>
@@ -383,7 +383,7 @@ export function OfflineTestOneByOne({ testState, chromeAPI }: OfflineProps) {
               {/* Modal */}
               {showScore && total && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                  <div className="bg-white p-6 rounded shadow-lg max-w-sm w-full text-center relative">
+                  <div className="bg-white p-6 rounded shadow-lg max-w-sm w-full text-center relative text-black">
                     <h2 className="text-2xl font-bold">
                       {total.totalScore} / {total.totalMarks}
                     </h2>

@@ -10,6 +10,7 @@ import { destroyPromptAPI, initPromptAPI } from "@/utils/promptClient";
 import TypingLoader from "../Loader/TypingLoader";
 import { getRandomScoreMessageFromTotal, TestsType } from "./offline_tests";
 import { initProofreader } from "@/utils/proofreaderClient";
+import { BookOpenCheck, StepBack, StepForward } from "lucide-react";
 
 interface TeacherProp {
   handleBack: () => any;
@@ -252,7 +253,7 @@ export function OnlineTestOneByOne({
                   {Object.entries(Tests).map(([testName]) => (
                     <div
                       key={testName}
-                      className="p-4 mb-2 min-w-xl rounded-2xl cursor-pointer bg-[#18c99d] border border-green-500 hover:bg-blue-300 hover:border-blue-900"
+                      className="p-4 mb-2 min-w-xl rounded-2xl cursor-pointer bg-[#18c99d] border border-green-500 hover:bg-blue-300 hover:border-blue-900 text-black"
                       onClick={() =>
                         setSelectedTest(testName as keyof TestsType)
                       }
@@ -262,14 +263,14 @@ export function OnlineTestOneByOne({
                   ))}
                 </div>
               ) : (
-                <div className="relative p-6 max-w-3xl mx-auto  ">
+                <div className="relative p-6 max-w-3xl mx-auto text-gray-400">
                   <div className="relative mb-6">
-                    <h2 className="font-semibold text-lg text-gray-800">
+                    <h2 className="font-semibold text-lg ">
                       {currentIndex + 1}. {questions[currentIndex].Q}
                     </h2>
 
                     {result[currentIndex] ? (
-                      <div className="mt-4 break-words whitespace-pre-wrap text-gray-600 leading-relaxed">
+                      <div className="mt-4 break-words whitespace-pre-wrap leading-relaxed">
                         {result[currentIndex].correctedInput !==
                           answers[currentIndex] && (
                           <div>
@@ -288,7 +289,7 @@ export function OnlineTestOneByOne({
                     )}
 
                     {promptResult[currentIndex] ? (
-                      <div className="mt-2 break-words whitespace-pre-wrap text-gray-600 leading-relaxed">
+                      <div className="mt-2 break-words whitespace-pre-wrap leading-relaxed">
                         {promptResult[currentIndex].feedback && (
                           <div>
                             <p className="font-bold text-black">Score:</p>
@@ -340,16 +341,16 @@ export function OnlineTestOneByOne({
                         (pressedAnalyze[currentIndex] &&
                           !promptResult[currentIndex])
                       }
-                      className={`absolute -left-20 top-40 px-4 py-2 rounded-md text-white ${
+                      className={`absolute -left-20 top-40 px-4 py-2 rounded-md text-black ${
                         currentIndex === 0 ||
                         (pressedAnalyze[currentIndex] &&
                           !promptResult[currentIndex])
                           ? "bg-gray-400"
-                          : "bg-indigo-600 hover:bg-indigo-700"
+                          : "bg-[#18c99d] border border-green-500 hover:bg-blue-300 hover:border-blue-900"
                       }`}
                       title="Previous Question"
                     >
-                      ⬅️
+                      <StepBack />
                     </button>
 
                     <button
@@ -365,12 +366,12 @@ export function OnlineTestOneByOne({
                     {currentIndex === questions.length - 1 ? (
                       <button
                         onClick={handleSubmit}
-                        className={`absolute -right-20 top-40  px-4 py-2 rounded-md  text-white 
+                        className={`absolute -right-20 top-40  px-4 py-2 rounded-md  text-black 
                        ${
                          pressedAnalyze[currentIndex] &&
                          !promptResult[currentIndex]
                            ? "bg-gray-400"
-                           : "bg-indigo-600 hover:bg-indigo-700"
+                           : "bg-[#18c99d] border border-green-500 hover:bg-blue-300 hover:border-blue-900"
                        } `}
                         title="Finish Test"
                         disabled={
@@ -378,17 +379,17 @@ export function OnlineTestOneByOne({
                           !promptResult[currentIndex]
                         }
                       >
-                        🏁
+                        <BookOpenCheck />
                       </button>
                     ) : (
                       <button
                         onClick={handleNext}
-                        className={`absolute -right-20 top-40  px-4 py-2 rounded-md  text-white 
+                        className={`absolute -right-20 top-40  px-4 py-2 rounded-md  text-black 
                        ${
                          pressedAnalyze[currentIndex] &&
                          !promptResult[currentIndex]
                            ? "bg-gray-400"
-                           : "bg-indigo-600 hover:bg-indigo-700"
+                           : "bg-[#18c99d] border border-green-500 hover:bg-blue-300 hover:border-blue-900"
                        } `}
                         title="Next Question"
                         disabled={
@@ -396,7 +397,7 @@ export function OnlineTestOneByOne({
                           !promptResult[currentIndex]
                         }
                       >
-                        ➡️
+                        <StepForward />
                       </button>
                     )}
                   </div>
@@ -404,7 +405,7 @@ export function OnlineTestOneByOne({
                   {/* Modal */}
                   {showScore && total && (
                     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                      <div className="bg-white p-6 rounded shadow-lg max-w-sm w-full text-center relative">
+                      <div className="bg-white p-6 rounded shadow-lg max-w-sm w-full text-center relative text-black">
                         <h2 className="text-2xl font-bold">
                           {total.totalScore} / {total.totalMarks}
                         </h2>
