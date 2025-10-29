@@ -152,6 +152,7 @@ export function OnlineTestOneByOne({
           Question: ${questions[currentIndex].Q}\n
           Students Answer: ${answers[currentIndex]}
           
+          If you don’t understand the answer, just provide the sample correct answer to the question in the rephrased version.
           Explain the core concept. Return only plain text — no Markdown, no asterisks, no formatting.
   `,
           { responseConstraint: evaluationSchema },
@@ -165,6 +166,7 @@ export function OnlineTestOneByOne({
           Correct Answer: ${questions[currentIndex].A}\n
           Students Answer: ${answers[currentIndex]}
           
+          If you don’t understand the answer, just provide the correct answer correct answer to the question in the rephrased version.
           Explain the core concept. Return only plain text — no Markdown, no asterisks, no formatting.
   `,
           { responseConstraint: evaluationSchema },
@@ -310,7 +312,7 @@ export function OnlineTestOneByOne({
                               {promptResult[currentIndex].feedback}
                             </p>
                             <p className="font-bold text-gray-300">
-                              Rephrased Version:
+                              Rephrased / Correct Version:
                             </p>
                             <p className="">
                               {promptResult[currentIndex].rephrase}
@@ -357,8 +359,12 @@ export function OnlineTestOneByOne({
                     <button
                       onClick={async () => await ChromeAPI()}
                       disabled={pressedAnalyze[currentIndex]}
-                      className={`px-4 py-2 bg-blue-600 text-white rounded absolute right-7 bottom-0 
-                         ${pressedAnalyze[currentIndex] && "bg-gray-400"}
+                      className={`px-4 py-2  rounded absolute right-7 bottom-0 text-black
+                         ${
+                           pressedAnalyze[currentIndex]
+                             ? "bg-gray-400"
+                             : "bg-[#18c99d] border border-green-500 hover:bg-green-400 hover:border-blue-900"
+                         }
                      `}
                     >
                       Analyze
@@ -406,18 +412,29 @@ export function OnlineTestOneByOne({
                   {/* Modal */}
                   {showScore && total && (
                     <div className="fixed inset-0 bg-[#0d0f1a] bg-opacity-50 flex items-center justify-center z-50">
-                      <div className="bg-blue-300 p-6 rounded shadow-lg max-w-sm w-full text-center relative text-black">
-                        <h2 className="text-2xl font-bold">
+                      <div className="flex flex-col bg-blue-300 p-6 rounded shadow-lg max-w-sm w-full   text-black">
+                        <p className="font-bold text-black text-2xl mt-2">
+                          Marks Obtained
+                        </p>
+                        <p className="text-xl font-medium">
                           {total.totalScore} / {total.totalMarks}
-                        </h2>
-                        <p>Total Questions answered: {total.totalQuestions}</p>
-                        <h2 className="text-xl font-bold mb-4">
-                          {total.message}
-                        </h2>
+                        </p>
+
+                        <p className="font-bold text-black text-2xl mt-2">
+                          Questions Attempted (Total)
+                        </p>
+                        <p className="text-xl font-medium">
+                          {total.totalQuestions}
+                        </p>
+
+                        <p className="font-bold text-black text-2xl mt-2">
+                          Remark
+                        </p>
+                        <p className="text-xl font-medium">{total.message}</p>
 
                         <button
                           onClick={() => setShowScore(false)}
-                          className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                          className="px-4 py-2 mt-5 bg-blue-700 text-black rounded hover:bg-blue-500"
                         >
                           Close
                         </button>

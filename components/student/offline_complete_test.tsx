@@ -123,13 +123,18 @@ export function OfflineCompleteTest({ testState, chromeAPI }: OfflineProps) {
           if (subject === "English") {
             return `
 Question ${index + 1}: ${q.Q}
+Sample Correct Answer: ${q.A}
 Student Answer: ${studentAns}
+
+If you don’t understand the answer, just provide the sample correct answer to the question in the rephrased version.
 `;
           } else {
             return `
 Question ${index + 1}: ${q.Q}
 Correct Answer: ${q.A}
 Student Answer: ${studentAns}
+
+If you don’t understand the answer, just provide the correct answer correct answer to the question in the rephrased version.
 `;
           }
         })
@@ -145,7 +150,8 @@ score (0–10), isCorrect, feedback, rephrase
 
 ${formattedQA}
 
-Return only plain text — no Markdown formatting.`,
+Return only plain text — no Markdown formatting.
+`,
         { responseConstraint: evaluationBatchSchema },
         { signal: signal }
       );
@@ -264,7 +270,7 @@ Return only plain text — no Markdown formatting.`,
                           {promptResult[currentIndex].feedback}
                         </p>
                         <p className="font-bold text-gray-300">
-                          Rephrased Version:
+                          Rephrased / Correct Version:
                         </p>
                         <p className="">
                           {promptResult[currentIndex].rephrase}
@@ -329,20 +335,32 @@ Return only plain text — no Markdown formatting.`,
 
               {/* Modal */}
               {showScore && (
-                <div className="fixed inset-0 bg-[#0d0f1a] bg-opacity-50 flex items-center justify-center z-50 text-black">
-                  <div className="bg-blue-300 p-6 rounded shadow-lg max-w-sm w-full text-center relative">
+                <div className="fixed inset-0 bg-[#0d0f1a] bg-opacity-50 flex items-center justify-center z-50">
+                  <div className=" bg-blue-300 rounded shadow-lg max-w-sm w-full text-black">
                     {total ? (
-                      <div>
-                        <h2 className="text-2xl font-bold">
+                      <div className="flex flex-col p-6">
+                        <p className="font-bold text-black text-2xl mt-2">
+                          Marks Obtained
+                        </p>
+                        <p className="text-xl font-medium">
                           {total.totalScore} / {total.totalMarks}
-                        </h2>
-                        <p>Total Questions answered: {total.totalQuestions}</p>
-                        <h2 className="text-2xl font-bold mb-4">
-                          {total.message}
-                        </h2>
+                        </p>
+
+                        <p className="font-bold text-black text-2xl mt-2">
+                          Questions Attempted (Total)
+                        </p>
+                        <p className="text-xl font-medium">
+                          {total.totalQuestions}
+                        </p>
+
+                        <p className="font-bold text-black text-2xl mt-2">
+                          Remark
+                        </p>
+                        <p className="text-xl font-medium">{total.message}</p>
+
                         <button
                           onClick={() => setShowScore(false)}
-                          className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                          className="px-4 py-2 mt-5 bg-green-600 border border-green-500 hover:bg-[#18c99d] hover:border-green-700 text-black rounded"
                         >
                           Close
                         </button>
@@ -364,9 +382,10 @@ Return only plain text — no Markdown formatting.`,
                         All questions must be answered before submitting the
                         test.
                       </p>
+
                       <button
                         onClick={() => setShowCompleteTestMsg(false)}
-                        className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                        className="px-4 py-2 mt-5 bg-green-600 border border-green-500 hover:bg-[#18c99d] hover:border-green-700 text-black rounded"
                       >
                         Close
                       </button>
