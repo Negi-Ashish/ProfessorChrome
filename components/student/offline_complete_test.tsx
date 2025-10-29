@@ -281,9 +281,9 @@ Return only plain text — no Markdown formatting.`,
                   disabled={pressedAnalyze?.[0]}
                   onChange={handleAnswerChange}
                   placeholder="Enter your answer..."
-                  className="relative block w-full mt-4 rounded-md bg-white px-3 py-2 text-base text-gray-900 
+                  className="relative block w-full mt-4 rounded-md bg-blue-300 px-3 py-2 text-base text-gray-900 
           outline-1 -outline-offset-1 outline-gray-300 
-          placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 
+          placeholder:text-gray-900 focus:outline-2 focus:-outline-offset-2 
           focus:outline-indigo-600 sm:text-sm min-h-40 resize-none"
                 ></textarea>
               </div>
@@ -330,7 +330,7 @@ Return only plain text — no Markdown formatting.`,
               {/* Modal */}
               {showScore && (
                 <div className="fixed inset-0 bg-[#0d0f1a] bg-opacity-50 flex items-center justify-center z-50 text-black">
-                  <div className="bg-white p-6 rounded shadow-lg max-w-sm w-full text-center relative">
+                  <div className="bg-blue-300 p-6 rounded shadow-lg max-w-sm w-full text-center relative">
                     {total ? (
                       <div>
                         <h2 className="text-2xl font-bold">
@@ -358,7 +358,7 @@ Return only plain text — no Markdown formatting.`,
 
               {showCompleteTestMsg && (
                 <div className="fixed inset-0 bg-[#0d0f1a] bg-opacity-50 flex items-center justify-center z-50 text-black">
-                  <div className="bg-white p-6 rounded shadow-lg max-w-sm w-full text-center relative">
+                  <div className="bg-blue-300 p-6 rounded shadow-lg max-w-sm w-full text-center relative">
                     <div>
                       <p className="text-xl font-bold mb-4">
                         All questions must be answered before submitting the
