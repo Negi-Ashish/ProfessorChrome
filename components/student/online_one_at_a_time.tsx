@@ -87,6 +87,10 @@ export function OnlineTestOneByOne({
   }, [questions, setPressedAnalyze]);
 
   async function ChromeAPI() {
+    if (answers[currentIndex] == undefined) {
+      alert("Please write a answer.");
+      return;
+    }
     const newResult = [...pressedAnalyze];
     newResult[currentIndex] = true;
     setPressedAnalyze(newResult);
@@ -176,9 +180,6 @@ export function OnlineTestOneByOne({
   }
 
   async function handleProofread() {
-    if (answers[currentIndex] == undefined) {
-      alert("Please write a answer.");
-    }
     const text = answers[currentIndex];
     if (!proofreaderSession) {
       console.log("Creating New Session");

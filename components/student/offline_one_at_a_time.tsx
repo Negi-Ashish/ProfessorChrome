@@ -78,6 +78,10 @@ export function OfflineTestOneByOne({ testState, chromeAPI }: OfflineProps) {
   }, [questions, setPressedAnalyze]);
 
   async function ChromeAPI() {
+    if (answers[currentIndex] == undefined) {
+      alert("Please write a answer.");
+      return;
+    }
     const newResult = [...pressedAnalyze];
     newResult[currentIndex] = true;
     setPressedAnalyze(newResult);
@@ -167,9 +171,6 @@ export function OfflineTestOneByOne({ testState, chromeAPI }: OfflineProps) {
   }
 
   async function handleProofread() {
-    if (answers[currentIndex] == undefined) {
-      alert("Please write a answer.");
-    }
     const text = answers[currentIndex];
     if (!proofreaderSession) {
       console.log("Creating New Session");
@@ -334,8 +335,12 @@ export function OfflineTestOneByOne({ testState, chromeAPI }: OfflineProps) {
                 <button
                   onClick={async () => await ChromeAPI()}
                   disabled={pressedAnalyze[currentIndex]}
-                  className={`px-4 py-2 bg-blue-600  rounded absolute right-7 bottom-0 text-white
-                         ${pressedAnalyze[currentIndex] && "bg-gray-400"}
+                  className={`px-4 py-2  rounded absolute right-7 bottom-0 text-black
+                         ${
+                           pressedAnalyze[currentIndex]
+                             ? "bg-gray-400"
+                             : "bg-[#18c99d] border border-green-500 hover:bg-green-400 hover:border-blue-900"
+                         }
                      `}
                 >
                   Analyze
