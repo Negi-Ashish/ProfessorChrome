@@ -20,6 +20,9 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Professor Chrome | Smart Test Creation and Learning Platform",
+  icons: {
+    icon: "/professor.ico",
+  },
   description:
     "Professor Chrome helps teachers create tests faster, analyze student performance instantly, and make learning easier for both educators and students. Scalable for schools, colleges, institutes, and multiple classes.",
   keywords: [
