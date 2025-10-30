@@ -35,11 +35,8 @@ The system compares both answers, analyzes **context, grammar, tone, and structu
 
 ### ⚙️ Under the Hood
 
-- **Writer API** → Generates improved rewrite examples.
-- **Rewriter API** → Suggests alternate phrasing while preserving meaning.
 - **Proofreader API** → Detects grammatical, spelling, and stylistic issues.
 - **Prompt API** → Guides stepwise feedback and teaching prompts.
-- **Language Detection API** → Supports multilingual classrooms.
 
 ---
 
@@ -61,7 +58,7 @@ The system compares both answers, analyzes **context, grammar, tone, and structu
 - **Frontend:** NextJS
 - **Backend:** NextJS
 - **Database:** Firebase / MongoDB (for teacher-student data)
-- **APIs:** Chrome AI APIs (Writer, Rewriter, Proofreader, Prompt, Language Detection)
+- **APIs:** Chrome AI APIs (Proofreader, Prompt)
 
 ---
 
