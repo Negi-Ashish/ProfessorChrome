@@ -88,7 +88,9 @@ export function AddTests({
                   value={testCode}
                   onChange={(e) => setTestCode(e.target.value)}
                   autoComplete="test-code"
-                  className="block w-full rounded-md bg-white px-3 py-1.5 text-base  outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                  className="block w-full rounded-md bg-blue-300  px-3 py-1.5 text-base text-black
+                  outline-1 -outline-offset-1 outline-gray-300  
+                  focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                 />
                 {errors.code && (
                   <p className="text-red-500 text-sm mt-1">{errors.code}</p>
@@ -110,8 +112,8 @@ export function AddTests({
                   value={testName}
                   onChange={(e) => setTestName(e.target.value)}
                   autoComplete="test-name"
-                  className="block w-full rounded-md bg-white px-3 py-1.5 text-base 
-               outline-1 -outline-offset-1 outline-gray-300 
+                  className="block w-full rounded-md bg-blue-300 px-3 py-1.5 text-base 
+               outline-1 -outline-offset-1 outline-gray-300 text-black
               placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 
               focus:outline-indigo-600 sm:text-sm/6"
                 />
