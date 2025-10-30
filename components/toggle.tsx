@@ -24,9 +24,11 @@ export function ToggleComponent(props: ToggleProp) {
             return <AdminComponent setRole={props.setRole} />;
           default:
             return (
-              <div className="max-w-6xl mx-auto">
+              <div className="max-w-6xl mx-auto text-center">
+                <p className="text-5xl mb-5">Who are you?</p>
                 <div className="flex flex-wrap gap-4 max-h-[80vh] overflow-auto p-4 justify-center">
                   {/* Teacher Button */}
+
                   <button
                     className="flex-shrink-0"
                     onClick={() => props.setRole("teacher")}

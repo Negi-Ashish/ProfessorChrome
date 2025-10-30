@@ -188,7 +188,7 @@ export function StudentComponent({ setRole }: StudentProp) {
                 onClick={() => setStudentMode("offline_oneByone")}
               >
                 <Card
-                  title="One by one (Offline)"
+                  title="One by one Practice Sets"
                   styling="hover:bg-blue-300 cursor-pointer hover:border-blue-900"
                   icon={<BookOpenCheck size={50} />}
                 />
@@ -198,7 +198,7 @@ export function StudentComponent({ setRole }: StudentProp) {
                 onClick={() => setStudentMode("offline_complete_test")}
               >
                 <Card
-                  title="Complete Test (Offline)"
+                  title="Complete Practice Sets"
                   styling="hover:bg-blue-300 cursor-pointer hover:border-blue-900"
                   icon={<NotebookPen size={50} />}
                 />
@@ -210,7 +210,7 @@ export function StudentComponent({ setRole }: StudentProp) {
                 onClick={() => setStudentMode("online_oneByone")}
               >
                 <Card
-                  title="One by one (Online)"
+                  title="One by one Live Tests"
                   styling={
                     isOnline
                       ? `hover:bg-blue-300 cursor-pointer hover:border-blue-900`
@@ -225,7 +225,7 @@ export function StudentComponent({ setRole }: StudentProp) {
                 onClick={() => setStudentMode("online_complete_test")}
               >
                 <Card
-                  title="Complete Test (Online)"
+                  title="Complete Live Tests"
                   styling={
                     isOnline
                       ? `hover:bg-blue-300 cursor-pointer hover:border-blue-900`
