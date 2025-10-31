@@ -95,181 +95,91 @@ export const Test_Two = {
 };
 
 export const Test_Three = {
-  English: [
+  Chemistry: [
     {
-      Q: "What is your favorite subject and why?",
-      A: "My favorite subject is science because I like doing experiments.",
+      Q: "What is chemistry?",
+      A: "Chemistry is the branch of science that studies matter, its composition, structure, properties, and the changes it undergoes.",
     },
     {
-      Q: "How do you prepare for exams?",
-      A: "I prepare for exams by revising daily and solving previous question papers.",
+      Q: "What is an atom?",
+      A: "An atom is the smallest unit of an element that retains its chemical properties.",
     },
     {
-      Q: "Who is your favorite teacher and why?",
-      A: "My favorite teacher is Mrs. Sharma because she explains topics clearly and kindly.",
+      Q: "What is a molecule?",
+      A: "A molecule is formed when two or more atoms combine chemically and act as a single unit.",
     },
     {
-      Q: "What was the best project you ever worked on?",
-      A: "The best project I worked on was making a model of the solar system for science class.",
+      Q: "What is the difference between an element and a compound?",
+      A: "An element contains only one type of atom, while a compound is made up of two or more different elements chemically bonded together.",
     },
     {
-      Q: "Do you prefer studying alone or in groups?",
-      A: "I prefer studying in groups because it helps me understand better when we discuss topics.",
+      Q: "What is the Law of Conservation of Mass?",
+      A: "It states that mass can neither be created nor destroyed during a chemical reaction; the mass of reactants equals the mass of products.",
     },
     {
-      Q: "What’s the most difficult subject for you?",
-      A: "Math is the most difficult subject for me because I find it hard to remember formulas.",
+      Q: "What is the periodic table?",
+      A: "The periodic table organizes elements based on their atomic number, electron configuration, and recurring chemical properties.",
     },
     {
-      Q: "How do you stay organized with your schoolwork?",
-      A: "I keep a timetable and make a to-do list every day to stay organized.",
+      Q: "What are physical and chemical changes?",
+      A: "A physical change alters the appearance but not the composition of a substance, while a chemical change forms new substances with different properties.",
     },
     {
-      Q: "What’s your favorite thing about your school?",
-      A: "My favorite thing about school is our playground because I love playing football there.",
+      Q: "What is an ion?",
+      A: "An ion is an atom or molecule that has gained or lost electrons, giving it a positive or negative charge.",
     },
     {
-      Q: "Do you like doing homework? Why or why not?",
-      A: "I don’t really like homework, but I know it helps me practice what I learned in class.",
+      Q: "What is a catalyst?",
+      A: "A catalyst is a substance that speeds up a chemical reaction without being consumed in the process.",
     },
     {
-      Q: "What would you change in your school if you could?",
-      A: "If I could, I would add more sports activities and art classes in school.",
+      Q: "What are acids and bases?",
+      A: "Acids are substances that produce hydrogen ions (H⁺) in solution, while bases produce hydroxide ions (OH⁻).",
     },
   ],
 };
 
 export const Test_Four = {
-  English: [
+  Biology: [
     {
-      Q: "What do you like to do in your free time?",
-      A: "In my free time, I like to draw and listen to music.",
+      Q: "What is biology?",
+      A: "Biology is the branch of science that studies living organisms, their structure, function, growth, and interactions with the environment.",
     },
     {
-      Q: "Do you enjoy outdoor or indoor games more?",
-      A: "I enjoy outdoor games more because they keep me active.",
+      Q: "What is a cell?",
+      A: "A cell is the basic structural and functional unit of life found in all living organisms.",
     },
     {
-      Q: "What kind of books do you like reading?",
-      A: "I like reading mystery and adventure books because they are exciting.",
+      Q: "What are the two main types of cells?",
+      A: "The two main types are prokaryotic cells, which lack a nucleus, and eukaryotic cells, which have a well-defined nucleus.",
     },
     {
-      Q: "How often do you watch TV?",
-      A: "I watch TV for about an hour every day after finishing my homework.",
+      Q: "What is photosynthesis?",
+      A: "Photosynthesis is the process by which green plants make food using sunlight, carbon dioxide, and water.",
     },
     {
-      Q: "Do you like spending time alone or with friends?",
-      A: "I like spending time with friends because we always have fun together.",
+      Q: "What is the function of the nucleus in a cell?",
+      A: "The nucleus controls all activities of the cell and contains the genetic material (DNA).",
     },
     {
-      Q: "What’s your favorite sport and why?",
-      A: "My favorite sport is cricket because it’s fun and full of teamwork.",
+      Q: "What is the difference between plant and animal cells?",
+      A: "Plant cells have a cell wall, chloroplasts, and a large vacuole, while animal cells do not.",
     },
     {
-      Q: "Do you like drawing or painting?",
-      A: "Yes, I love painting colorful landscapes and cartoons.",
+      Q: "What is respiration?",
+      A: "Respiration is the process by which living organisms release energy from food molecules like glucose.",
     },
     {
-      Q: "What’s your favorite movie and why?",
-      A: "My favorite movie is 'Kung Fu Panda' because it teaches about courage and hard work.",
+      Q: "What are tissues?",
+      A: "Tissues are groups of similar cells that work together to perform a specific function.",
     },
     {
-      Q: "How do you relax after a long day?",
-      A: "I relax by listening to songs or watching funny videos.",
+      Q: "What is DNA?",
+      A: "DNA (Deoxyribonucleic Acid) carries genetic information that determines an organism’s traits and controls cell functions.",
     },
     {
-      Q: "What hobby would you like to learn in the future?",
-      A: "I would like to learn playing the guitar in the future.",
-    },
-  ],
-};
-
-export const Test_Five = {
-  English: [
-    {
-      Q: "What do you want to be when you grow up?",
-      A: "I want to be a doctor because I want to help sick people.",
-    },
-    {
-      Q: "If you could visit any country, where would you go?",
-      A: "I would like to visit Japan because I love its culture and technology.",
-    },
-    {
-      Q: "What would you do if you found a lost wallet?",
-      A: "I would try to find the owner or give it to the police.",
-    },
-    {
-      Q: "What is your biggest dream in life?",
-      A: "My biggest dream is to travel the world and learn about new cultures.",
-    },
-    {
-      Q: "If you could change one thing in the world, what would it be?",
-      A: "I would remove poverty so that everyone can live happily.",
-    },
-    {
-      Q: "What is something you are proud of?",
-      A: "I am proud of winning the first prize in my school debate competition.",
-    },
-    {
-      Q: "If you had a superpower, what would it be?",
-      A: "If I had a superpower, I would want to fly so I could see the whole world.",
-    },
-    {
-      Q: "What do you think makes a good friend?",
-      A: "A good friend is honest, caring, and always there when you need help.",
-    },
-    {
-      Q: "What do you like most about yourself?",
-      A: "I like that I am hardworking and never give up easily.",
-    },
-    {
-      Q: "How do you handle challenges in life?",
-      A: "I try to stay calm and think of solutions instead of giving up.",
-    },
-  ],
-};
-
-export const Test_Six = {
-  English: [
-    {
-      Q: "Describe your typical day from morning to evening. Include what you do at school, during breaks, and after coming home.",
-      A: "I usually wake up around 6:30 AM. I freshen up, have breakfast, and get ready for school. At school, I attend classes and take notes carefully. During breaks, I talk with my friends and play some games. After school, I either go for tuition or spend time on my hobbies like reading or drawing. In the evening, I help my parents at home and finish my homework before dinner.",
-    },
-    {
-      Q: "Talk about a memorable trip or vacation you had. Where did you go, who was with you, and what made it special?",
-      A: "Last summer, I went on a trip to the mountains with my family. We stayed in a cabin near a lake and spent the days hiking and exploring nature. I really enjoyed the fresh air and beautiful scenery. We also cooked meals together, played games, and watched the sunset every evening. It was special because we all had so much fun and spent quality time together.",
-    },
-    {
-      Q: "Explain your favorite hobby or activity. How do you do it, why do you enjoy it, and how does it make you feel?",
-      A: "My favorite hobby is painting. I usually start by sketching ideas in my notebook and then paint them using watercolors or acrylics. I enjoy it because it allows me to express my creativity and forget about stress. It makes me feel relaxed and happy, and I love seeing my finished paintings displayed on my wall.",
-    },
-    {
-      Q: "Describe a challenge you faced recently and how you overcame it. What did you learn from this experience?",
-      A: "Recently, I found it difficult to finish a school project on time because I underestimated the amount of work. I overcame it by making a schedule, prioritizing tasks, and asking for help from my friends when needed. I completed the project successfully. This experience taught me the importance of planning ahead and asking for help instead of struggling alone.",
-    },
-    {
-      Q: "Talk about a person who inspires you. Explain who they are, what they do, and why they motivate you.",
-      A: "My mother inspires me the most. She works hard every day to take care of our family while managing her own job. She is always positive and teaches me to stay calm in difficult situations. I admire her dedication and patience, and she motivates me to work hard and stay disciplined in my own life.",
-    },
-    {
-      Q: "Describe a book, movie, or story that had a strong impact on you. Why did it affect you, and what did you learn from it?",
-      A: "I recently read the book 'The Diary of a Young Girl' by Anne Frank. It affected me deeply because it showed how a young girl remained hopeful and strong during very difficult times. I learned about courage, resilience, and the importance of staying positive even when situations are tough.",
-    },
-    {
-      Q: "Imagine you are given a day to plan anything you want. How would you spend it from start to finish and why?",
-      A: "If I had a day to plan freely, I would start by visiting a nearby park and enjoying a morning walk. Then I would meet my friends and play football or other games. After lunch, I would spend some time painting or reading. In the evening, I would watch a movie with my family and end the day by writing a journal about my experiences. I would plan it this way because it combines fun, creativity, and family time.",
-    },
-    {
-      Q: "Talk about an achievement you are proud of. What did you do, how did you feel, and what did it teach you?",
-      A: "I am proud of winning the first prize in my school debate competition. I prepared for weeks, practiced my speech, and worked on my confidence. Winning made me feel very happy and motivated. It taught me that hard work, preparation, and self-belief can lead to success.",
-    },
-    {
-      Q: "Describe your favorite place in your city or town. What is it like, what do you do there, and why do you like it?",
-      A: "My favorite place in my city is the public library. It is quiet and full of interesting books. I usually go there to read novels, study, or just sit and enjoy the peaceful atmosphere. I like it because it helps me focus, learn new things, and relax at the same time.",
-    },
-    {
-      Q: "Explain how you usually spend your weekends. Include any routines, hobbies, or time spent with family and friends.",
-      A: "On weekends, I usually wake up a little later and have a relaxed breakfast. I spend the morning studying or finishing homework. In the afternoon, I play outdoor games or hang out with my friends. In the evening, I spend time with my family, watch TV, or read a book. Weekends are important to recharge and enjoy both hobbies and family time.",
+      Q: "What is an ecosystem?",
+      A: "An ecosystem is a community of living organisms interacting with each other and with their non-living environment.",
     },
   ],
 };
@@ -319,6 +229,141 @@ export const Test_Seven = {
   ],
 };
 
+export const Test_Eight = {
+  History: [
+    {
+      Q: "When did World War I begin and end?",
+      A: "World War I began in 1914 and ended in 1918.",
+    },
+    {
+      Q: "What event triggered World War I?",
+      A: "The assassination of Archduke Franz Ferdinand of Austria-Hungary in 1914.",
+    },
+    {
+      Q: "When did World War II begin and end?",
+      A: "World War II began in 1939 and ended in 1945.",
+    },
+    {
+      Q: "What event marked the beginning of World War II?",
+      A: "Germany’s invasion of Poland in 1939.",
+    },
+    {
+      Q: "What was the Cold War?",
+      A: "A period of political and military tension between the United States and the Soviet Union from 1947 to 1991.",
+    },
+    {
+      Q: "What was the Iron Curtain?",
+      A: "A term describing the division between communist Eastern Europe and democratic Western Europe during the Cold War.",
+    },
+    {
+      Q: "What was D-Day in World War II?",
+      A: "The Allied invasion of Normandy, France, on June 6, 1944, to liberate Western Europe from Nazi control.",
+    },
+    {
+      Q: "What caused Japan to surrender in World War II?",
+      A: "The atomic bombings of Hiroshima and Nagasaki in August 1945.",
+    },
+    {
+      Q: "What was the main ideological conflict during the Cold War?",
+      A: "The struggle between capitalism (led by the U.S.) and communism (led by the Soviet Union).",
+    },
+    {
+      Q: "When did the Cold War end?",
+      A: "The Cold War ended in 1991 with the collapse of the Soviet Union.",
+    },
+  ],
+};
+
+export const Test_Nine = {
+  Physics: [
+    {
+      Q: "What is kinematics?",
+      A: "Kinematics is the study of motion without considering the forces that cause it.",
+    },
+    {
+      Q: "What is the difference between speed and velocity?",
+      A: "Speed is how fast an object moves, while velocity includes both speed and direction.",
+    },
+    {
+      Q: "What is acceleration?",
+      A: "Acceleration is the rate of change of velocity over time.",
+    },
+    {
+      Q: "What is displacement?",
+      A: "Displacement is the shortest straight-line distance between an object’s starting and ending points.",
+    },
+    {
+      Q: "What does a distance-time graph represent?",
+      A: "It shows how the distance covered by an object changes with time.",
+    },
+    {
+      Q: "What does the slope of a velocity-time graph represent?",
+      A: "The slope represents the acceleration of the object.",
+    },
+    {
+      Q: "What is uniform motion?",
+      A: "Uniform motion occurs when an object moves at a constant speed in a straight line.",
+    },
+    {
+      Q: "What is non-uniform motion?",
+      A: "Non-uniform motion occurs when an object’s speed or direction changes over time.",
+    },
+    {
+      Q: "What is meant by instantaneous velocity?",
+      A: "It is the velocity of an object at a specific moment in time.",
+    },
+    {
+      Q: "Can an object have zero displacement but non-zero distance?",
+      A: "Yes, if it returns to its starting point after moving, its displacement is zero but distance is not.",
+    },
+  ],
+};
+
+export const Test_Ten = {
+  Science: [
+    {
+      Q: "What is matter?",
+      A: "Matter is anything that has mass and occupies space.",
+    },
+    {
+      Q: "What is an atom?",
+      A: "An atom is the smallest unit of an element that retains its chemical properties.",
+    },
+    {
+      Q: "What is the difference between a solid, liquid, and gas?",
+      A: "Solids have a fixed shape and volume, liquids have a fixed volume but no fixed shape, and gases have neither.",
+    },
+    {
+      Q: "What is photosynthesis?",
+      A: "The process by which green plants make food using sunlight, carbon dioxide, and water.",
+    },
+    {
+      Q: "What is respiration?",
+      A: "The process by which living organisms release energy from food.",
+    },
+    {
+      Q: "What is the function of DNA?",
+      A: "DNA carries genetic information that determines an organism’s traits.",
+    },
+    {
+      Q: "What is the difference between physical and chemical changes?",
+      A: "Physical changes alter form but not composition, while chemical changes produce new substances.",
+    },
+    {
+      Q: "What are renewable and non-renewable resources?",
+      A: "Renewable resources replenish naturally, while non-renewable ones like coal and oil do not.",
+    },
+    {
+      Q: "What is an ecosystem?",
+      A: "A community of living organisms interacting with their non-living environment.",
+    },
+    {
+      Q: "What is a cell?",
+      A: "A cell is the basic structural and functional unit of life.",
+    },
+  ],
+};
+
 export type TestsType = {
   [subjectName: string]: Test;
 };
@@ -326,11 +371,12 @@ export type TestsType = {
 export const Tests: TestsType = {
   "English I": Test_One,
   "English II": Test_Two,
-  "English III": Test_Three,
-  "English IV": Test_Four,
-  "English V": Test_Five,
-  "English VI": Test_Six,
-  "Geography I": Test_Seven,
+  Geography: Test_Seven,
+  History: Test_Eight,
+  Physics: Test_Nine,
+  Chemistry: Test_Three,
+  Biology: Test_Four,
+  Science: Test_Ten,
 };
 
 const scoreMessages: Record<number, string[]> = {
