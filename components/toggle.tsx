@@ -2,9 +2,10 @@ import { Dispatch, SetStateAction } from "react";
 import { TeacherComponent } from "./teacher";
 import { StudentComponent } from "./student";
 import { AdminComponent } from "./admin";
+import { ParaphraseComponent } from "./paraphrase";
 import { Card } from "./card";
 
-import { BookUser, GraduationCap } from "lucide-react";
+import { BookUser, GraduationCap, PenLine } from "lucide-react";
 
 interface ToggleProp {
   role: string; // optional prop
@@ -22,6 +23,8 @@ export function ToggleComponent(props: ToggleProp) {
             return <StudentComponent setRole={props.setRole} />;
           case "admin":
             return <AdminComponent setRole={props.setRole} />;
+          case "paraphrase":
+            return <ParaphraseComponent setRole={props.setRole} />;
           default:
             return (
               <div className="max-w-6xl mx-auto text-center">
@@ -48,6 +51,17 @@ export function ToggleComponent(props: ToggleProp) {
                       styling="hover:bg-blue-300 cursor-pointer hover:border-blue-900"
                       title="Student"
                       icon={<GraduationCap size={50} />}
+                    />
+                  </button>
+                  {/* Humanizer Button */}
+                  <button
+                    className="flex-shrink-0"
+                    onClick={() => props.setRole("paraphrase")}
+                  >
+                    <Card
+                      styling="hover:bg-blue-300 cursor-pointer hover:border-blue-900"
+                      title="Humanizer"
+                      icon={<PenLine size={50} />}
                     />
                   </button>
                   {/* Admin Button */}
